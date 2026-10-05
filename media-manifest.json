@@ -1,0 +1,926 @@
+{
+  "generated_at": "2026-10-05T13:11:21.296882Z",
+  "source_site": "https://staging.marenabali.com",
+  "totals": {
+    "media_items": 126,
+    "pages_scanned": 11
+  },
+  "targets": {
+    "villa:1br": [
+      {
+        "id": 191,
+        "title": "Marena Bali 1br Villa Outdoor Kitchen Bar",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-outdoor-kitchen-bar.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 187,
+        "title": "Marena Bali 1br Villa Kitchen Island Detail",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-kitchen-island-detail.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 188,
+        "title": "Marena Bali 1br Villa Dining Room Pendant Lights",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-dining-room-pendant-lights.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 178,
+        "title": "Marena Bali 1br Villa Linen Textile Detail",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-linen-textile-detail.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 210,
+        "title": "Marena Bali 1br Villa Wardrobe Dressing Area",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-wardrobe-dressing-area.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 193,
+        "title": "Marena Bali 1br Villa Living Room Sofa Styling",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-living-room-sofa-styling.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 220,
+        "title": "Marena Bali 1br Villa Guest Bathroom Travertine Vessel Sink",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-guest-bathroom-travertine-vessel-sink.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 221,
+        "title": "Marena Bali 1br Villa Open Plan Living Dining Kitchen",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-open-plan-living-dining-kitchen.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 190,
+        "title": "Marena Bali 1br Villa Pool Lounge Umbrella",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-pool-lounge-umbrella.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 192,
+        "title": "Marena Bali 1br Villa Lounge Chair Cushion Detail",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-lounge-chair-cushion-detail.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 222,
+        "title": "Marena Bali Villa Bedroom Wardrobe Study Desk Garden View",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-bedroom-wardrobe-study-desk-garden-view.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 183,
+        "title": "Marena Bali 1br Villa Terrace Lounge Towels",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-terrace-lounge-towels.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      }
+    ],
+    "villa:2br": [
+      {
+        "id": 141,
+        "title": "Marena Bali Villa Dual Vanity Bathroom",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-dual-vanity-bathroom.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 196,
+        "title": "Marena Bali Villa Living Room Stone Wall",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-living-room-stone-wall.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 133,
+        "title": "Marena Bali Villa Indoor Outdoor Dining Kitchen Pool View",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-indoor-outdoor-dining-kitchen-pool-view.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 224,
+        "title": "Marena Bali Villa Master Bedroom Panoramic Ocean View",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-master-bedroom-panoramic-ocean-view.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 155,
+        "title": "Marena Bali 2br Villa Open Plan Living Dining",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-2br-villa-open-plan-living-dining.jpg",
+        "width": 1920,
+        "height": 1280,
+        "ref_count": 4
+      },
+      {
+        "id": 156,
+        "title": "Marena Bali Villa Terrace Sun Lounge",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-terrace-sun-lounge.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 211,
+        "title": "Marena Bali Villa Double Vanity Bathroom Rainfall Shower",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-double-vanity-bathroom-rainfall-shower.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 148,
+        "title": "Marena Bali Villa Bathroom Ocean View",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-bathroom-ocean-view.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 142,
+        "title": "Marena Bali 2br Villa Master Bath Rain Shower",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-2br-villa-master-bath-rain-shower.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 268,
+        "title": "Marena Bali Villa Spa Bathroom Soaking Tub Panoramic",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-spa-bathroom-soaking-tub-panoramic.jpeg",
+        "width": 1920,
+        "height": 1280,
+        "ref_count": 4
+      },
+      {
+        "id": 212,
+        "title": "Marena Bali Villa Luxury Spa Bathroom Soaking Tub Sea Views",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-luxury-spa-bathroom-soaking-tub-sea-views.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 177,
+        "title": "Marena Bali Villa Pool Terrace Lounge Setup",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-pool-terrace-lounge-setup.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 266,
+        "title": "Marena Bali Villa Powder Room Travertine Tiles",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-powder-room-travertine-tiles.jpeg",
+        "width": 1920,
+        "height": 1280,
+        "ref_count": 4
+      },
+      {
+        "id": 180,
+        "title": "Marena Bali 2br Villa Open Plan Interior Overview",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-2br-villa-open-plan-interior-overview.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 213,
+        "title": "Marena Bali Villa Master Bedroom Gallery Wall Ensuite",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-master-bedroom-gallery-wall-ensuite.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 132,
+        "title": "Marena Bali Villa Open Plan Living Dining Kitchen",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-open-plan-living-dining-kitchen.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 144,
+        "title": "Marena Bali 2br Villa Bedroom Mountain View",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-2br-villa-bedroom-mountain-view.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 143,
+        "title": "Marena Bali Villa Walk In Rain Shower",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-walk-in-rain-shower.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 181,
+        "title": "Marena Bali Villa Modern Living Room",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-modern-living-room.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 135,
+        "title": "Marena Bali 2br Villa Master Bedroom Gallery Wall",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-2br-villa-master-bedroom-gallery-wall.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      }
+    ],
+    "villa:4br": [
+      {
+        "id": 141,
+        "title": "Marena Bali Villa Dual Vanity Bathroom",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-dual-vanity-bathroom.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 149,
+        "title": "Marena Bali 4br Villa Cozy Bedroom Retreat",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-cozy-bedroom-retreat.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 196,
+        "title": "Marena Bali Villa Living Room Stone Wall",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-living-room-stone-wall.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 136,
+        "title": "Marena Bali Villa Hallway Garden Wall",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-hallway-garden-wall.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 133,
+        "title": "Marena Bali Villa Indoor Outdoor Dining Kitchen Pool View",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-indoor-outdoor-dining-kitchen-pool-view.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 224,
+        "title": "Marena Bali Villa Master Bedroom Panoramic Ocean View",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-master-bedroom-panoramic-ocean-view.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 205,
+        "title": "Marena Bali 4br Villa Kitchen Island Open Plan",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-kitchen-island-open-plan.jpg",
+        "width": 1920,
+        "height": 1280,
+        "ref_count": 4
+      },
+      {
+        "id": 156,
+        "title": "Marena Bali Villa Terrace Sun Lounge",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-terrace-sun-lounge.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 209,
+        "title": "Marena Bali 4br Villa Walk In Rain Shower Travertine",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-walk-in-rain-shower-travertine.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 211,
+        "title": "Marena Bali Villa Double Vanity Bathroom Rainfall Shower",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-double-vanity-bathroom-rainfall-shower.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 148,
+        "title": "Marena Bali Villa Bathroom Ocean View",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-bathroom-ocean-view.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 268,
+        "title": "Marena Bali Villa Spa Bathroom Soaking Tub Panoramic",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-spa-bathroom-soaking-tub-panoramic.jpeg",
+        "width": 1920,
+        "height": 1280,
+        "ref_count": 4
+      },
+      {
+        "id": 207,
+        "title": "Marena Bali 4br Villa Bedroom Botanical Wall Art",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-bedroom-botanical-wall-art.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 177,
+        "title": "Marena Bali Villa Pool Terrace Lounge Setup",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-pool-terrace-lounge-setup.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 212,
+        "title": "Marena Bali Villa Luxury Spa Bathroom Soaking Tub Sea Views",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-luxury-spa-bathroom-soaking-tub-sea-views.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 266,
+        "title": "Marena Bali Villa Powder Room Travertine Tiles",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-powder-room-travertine-tiles.jpeg",
+        "width": 1920,
+        "height": 1280,
+        "ref_count": 4
+      },
+      {
+        "id": 199,
+        "title": "Marena Bali 4br Villa Outdoor Kitchen Dining",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-outdoor-kitchen-dining.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 213,
+        "title": "Marena Bali Villa Master Bedroom Gallery Wall Ensuite",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-master-bedroom-gallery-wall-ensuite.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 132,
+        "title": "Marena Bali Villa Open Plan Living Dining Kitchen",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-open-plan-living-dining-kitchen.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 137,
+        "title": "Marena Bali Villa Bedroom Terrace Access",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-bedroom-terrace-access.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 128,
+        "title": "Marena Bali 4br Villa Kitchen Marble Countertops",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-kitchen-marble-countertops.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 200,
+        "title": "Marena Bali 4br Villa Pool Terrace Multiple Loungers",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-pool-terrace-multiple-loungers.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 143,
+        "title": "Marena Bali Villa Walk In Rain Shower",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-walk-in-rain-shower.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 181,
+        "title": "Marena Bali Villa Modern Living Room",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-modern-living-room.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 168,
+        "title": "Marena Bali 4br Villa Kitchen Island",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-kitchen-island.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      },
+      {
+        "id": 219,
+        "title": "Marena Bali 4br Villa Dining Pendant Lights Fruit Bowl",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-dining-pendant-lights-fruit-bowl.jpg",
+        "width": 1707,
+        "height": 2560,
+        "ref_count": 4
+      },
+      {
+        "id": 222,
+        "title": "Marena Bali Villa Bedroom Wardrobe Study Desk Garden View",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-villa-bedroom-wardrobe-study-desk-garden-view.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 4
+      }
+    ],
+    "experience:hub": [
+      {
+        "id": 225,
+        "title": "Marena Bali 4br Villa Private Infinity Pool Landscape",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-private-infinity-pool-landscape.jpg",
+        "width": 1920,
+        "height": 1280,
+        "ref_count": 1
+      },
+      {
+        "id": 221,
+        "title": "Marena Bali 1br Villa Open Plan Living Dining Kitchen",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-open-plan-living-dining-kitchen.jpg",
+        "width": 2560,
+        "height": 1707,
+        "ref_count": 1
+      },
+      {
+        "id": 205,
+        "title": "Marena Bali 4br Villa Kitchen Island Open Plan",
+        "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-4br-villa-kitchen-island-open-plan.jpg",
+        "width": 1920,
+        "height": 1280,
+        "ref_count": 1
+      }
+    ]
+  },
+  "unmatched": [
+    {
+      "id": 640,
+      "title": "marena-icon-drinks",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/09/marena-icon-drinks.png"
+    },
+    {
+      "id": 639,
+      "title": "marena-icon-bbq",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/09/marena-icon-bbq.png"
+    },
+    {
+      "id": 578,
+      "title": "marena-image-fix.zip",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/09/marena-image-fix.zip"
+    },
+    {
+      "id": 577,
+      "title": "gk-block-mcp.zip",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/09/gk-block-mcp.zip"
+    },
+    {
+      "id": 327,
+      "title": "_DSF9641",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/02/DSF9641-scaled.jpg"
+    },
+    {
+      "id": 276,
+      "title": "_DSF9605",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9605.png"
+    },
+    {
+      "id": 273,
+      "title": "_DSF9605",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9605.jpeg"
+    },
+    {
+      "id": 271,
+      "title": "Marena Bali 2br Villa Private Infinity Pool Panoramic",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-2br-villa-private-infinity-pool-panoramic.jpeg"
+    },
+    {
+      "id": 269,
+      "title": "_DSF9614",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9614.jpeg"
+    },
+    {
+      "id": 253,
+      "title": "MARENA_Bingin_Bali-1",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/MARENA_Bingin_Bali-1.png"
+    },
+    {
+      "id": 242,
+      "title": "real-estate-30-scaled-1",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/real-estate-30-scaled-1.jpg"
+    },
+    {
+      "id": 223,
+      "title": "_DSF9599",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9599-scaled.jpg"
+    },
+    {
+      "id": 218,
+      "title": "_DSF9765",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9765-scaled.jpg"
+    },
+    {
+      "id": 217,
+      "title": "_DSF9611",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9611-scaled.jpg"
+    },
+    {
+      "id": 216,
+      "title": "_DSF9605",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9605-scaled.jpg"
+    },
+    {
+      "id": 215,
+      "title": "_DSF9601",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9601-scaled.jpg"
+    },
+    {
+      "id": 214,
+      "title": "_DSF9598",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9598-scaled.jpg"
+    },
+    {
+      "id": 208,
+      "title": "_DSF9616",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9616-scaled.jpg"
+    },
+    {
+      "id": 206,
+      "title": "_DSF9472",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9472-1-scaled.jpg"
+    },
+    {
+      "id": 204,
+      "title": "Dining Room Storage Shelving \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9713-scaled.jpg"
+    },
+    {
+      "id": 203,
+      "title": "Living Room Coffee Table Vignette \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9711-scaled.jpg"
+    },
+    {
+      "id": 202,
+      "title": "Throw Blanket Weave Texture \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9707-scaled.jpg"
+    },
+    {
+      "id": 201,
+      "title": "Living Room Wooden Shelving \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9705-scaled.jpg"
+    },
+    {
+      "id": 198,
+      "title": "Pool and Umbrella Landscape \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9673-scaled.jpg"
+    },
+    {
+      "id": 197,
+      "title": "Pool Lounge Seating Area \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9667-scaled.jpg"
+    },
+    {
+      "id": 195,
+      "title": "Kitchen Island and Dining \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9471-1-scaled.jpg"
+    },
+    {
+      "id": 194,
+      "title": "Dining Kitchen Integration \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9464-1-scaled.jpg"
+    },
+    {
+      "id": 189,
+      "title": "Pool Pergola Shade \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9504-scaled.jpg"
+    },
+    {
+      "id": 186,
+      "title": "Kitchen Dining Living Flow \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9661-scaled.jpg"
+    },
+    {
+      "id": 185,
+      "title": "Living Room Stone Feature \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9488-1-scaled.jpg"
+    },
+    {
+      "id": 184,
+      "title": "Kitchen Island Seating \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9463-1-scaled.jpg"
+    },
+    {
+      "id": 182,
+      "title": "Bedroom Media Wall \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9648-scaled.jpg"
+    },
+    {
+      "id": 179,
+      "title": "Pool Area with Pergola \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9731-scaled.jpg"
+    },
+    {
+      "id": 176,
+      "title": "Infinity Pool Terrace \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9502-scaled.jpg"
+    },
+    {
+      "id": 175,
+      "title": "Bedroom with Garden Light \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9645-scaled.jpg"
+    },
+    {
+      "id": 174,
+      "title": "Outdoor Kitchen and Grill \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9532-scaled.jpg"
+    },
+    {
+      "id": 173,
+      "title": "Bedroom Botanical Wall Art \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9726-scaled.jpg"
+    },
+    {
+      "id": 172,
+      "title": "Living and Dining Integration \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9493-2-scaled-e1769657058116.jpg"
+    },
+    {
+      "id": 171,
+      "title": "Pool Umbrella and Loungers \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9684-scaled.jpg"
+    },
+    {
+      "id": 170,
+      "title": "Interior Entry Foyer \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9653-scaled.jpg"
+    },
+    {
+      "id": 169,
+      "title": "Pool Deck Sun Loungers \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9531-scaled.jpg"
+    },
+    {
+      "id": 167,
+      "title": "Kitchen and Dining Open-Plan \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9469-1-scaled.jpg"
+    },
+    {
+      "id": 166,
+      "title": "Living Room Styling Detail \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9695-scaled.jpg"
+    },
+    {
+      "id": 165,
+      "title": "Dining Pendant Lighting \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9694-scaled.jpg"
+    },
+    {
+      "id": 164,
+      "title": "Kitchen Dining Transition \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9656-scaled.jpg"
+    },
+    {
+      "id": 163,
+      "title": "Living Room with Fireplace \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9482-1-scaled.jpg"
+    },
+    {
+      "id": 162,
+      "title": "Poolside Lounge Area \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9683-scaled.jpg"
+    },
+    {
+      "id": 161,
+      "title": "Outdoor Sectional Lounge \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9536-scaled.jpg"
+    },
+    {
+      "id": 160,
+      "title": "Indoor-Outdoor Living Space \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9534-scaled.jpg"
+    },
+    {
+      "id": 159,
+      "title": "Pool Terrace with Panoramic View \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9520-scaled.jpg"
+    },
+    {
+      "id": 158,
+      "title": "Kitchen Island Counter \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9697-scaled.jpg"
+    },
+    {
+      "id": 157,
+      "title": "Marena Bali 1br Villa Master Bedroom Seaview",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/marena-bali-1br-villa-master-bedroom-seaview.jpg"
+    },
+    {
+      "id": 154,
+      "title": "Living Room Coffee Table \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9814-scaled.jpg"
+    },
+    {
+      "id": 153,
+      "title": "Decorative Wall Art Display \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9785-scaled.jpg"
+    },
+    {
+      "id": 152,
+      "title": "Sofa Cushion Detail \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9709-scaled.jpg"
+    },
+    {
+      "id": 151,
+      "title": "Freestanding Bathtub with Ocean View \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9587-scaled.jpg"
+    },
+    {
+      "id": 150,
+      "title": "Bed Pillow and Linen Detail \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9790-scaled.jpg"
+    },
+    {
+      "id": 147,
+      "title": "Bedroom with Built-In Wardrobe \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9551-scaled.jpg"
+    },
+    {
+      "id": 146,
+      "title": "Rainfall Showerhead Detail \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9787-scaled.jpg"
+    },
+    {
+      "id": 145,
+      "title": "Living Room Floating Shelves \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9740-scaled.jpg"
+    },
+    {
+      "id": 140,
+      "title": "Bedroom Nightstand Detail \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9806-scaled.jpg"
+    },
+    {
+      "id": 139,
+      "title": "Master Bedroom Panoramic View \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9609-scaled.jpg"
+    },
+    {
+      "id": 138,
+      "title": "Spa Bathroom Shower \u2014 Marena Bali Villa",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9556-scaled.jpg"
+    },
+    {
+      "id": 131,
+      "title": "_DSF9489",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9489-scaled.jpg"
+    },
+    {
+      "id": 130,
+      "title": "_DSF9488",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9488-scaled.jpg"
+    },
+    {
+      "id": 129,
+      "title": "_DSF9482",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9482-scaled.jpg"
+    },
+    {
+      "id": 127,
+      "title": "_DSF9476",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9476-scaled.jpg"
+    },
+    {
+      "id": 126,
+      "title": "_DSF9471",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9471-scaled.jpg"
+    },
+    {
+      "id": 125,
+      "title": "_DSF9469",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9469-scaled.jpg"
+    },
+    {
+      "id": 124,
+      "title": "_DSF9466",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9466-scaled-e1769573183302.jpg"
+    },
+    {
+      "id": 123,
+      "title": "_DSF9464",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9464-scaled.jpg"
+    },
+    {
+      "id": 122,
+      "title": "_DSF9463",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9463-scaled.jpg"
+    },
+    {
+      "id": 121,
+      "title": "_DSF9472",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2026/01/DSF9472-scaled.jpg"
+    },
+    {
+      "id": 59,
+      "title": "image1-3",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2025/12/image1-3.png"
+    },
+    {
+      "id": 57,
+      "title": "room1-2",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2025/12/room1-2.png"
+    },
+    {
+      "id": 43,
+      "title": "illus9",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2025/12/illus9.png"
+    },
+    {
+      "id": 42,
+      "title": "illus29",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2025/12/illus29.png"
+    },
+    {
+      "id": 41,
+      "title": "Villa 1-1",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2025/12/illus13.png"
+    },
+    {
+      "id": 38,
+      "title": "MARENA_Bingin_Bali",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2025/12/MARENA_Bingin_Bali-1.png"
+    },
+    {
+      "id": 37,
+      "title": "MARENA_Bingin_Bali",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2025/12/MARENA_Bingin_Bali.png"
+    },
+    {
+      "id": 34,
+      "title": "logo",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2025/12/logo.png"
+    },
+    {
+      "id": 31,
+      "title": "heroimage",
+      "url": "https://staging.marenabali.com/wp-content/uploads/2025/12/heroimage.jpg"
+    }
+  ]
+}

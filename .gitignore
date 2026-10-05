@@ -11,3 +11,6 @@ build/
 .strapi/
 public/uploads/
 .turbo/
+# media-manifest.json is committed as the first-run snapshot.
+# Re-run scripts/classify_media.py to regenerate locally; do not commit new timestamps.
+# media-manifest.local.json is your private working copy if you want to keep one.
