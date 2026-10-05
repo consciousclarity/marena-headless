@@ -1,0 +1,64 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepage",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage",
+    "description": "The /  page. Single entry, edits via 'Homepage' sidebar item in admin."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "heroHeadline": {
+      "type": "string",
+      "required": true,
+      "maxLength": 60,
+      "description": "Top-of-page headline. 60 char cap so it stays on one line at desktop."
+    },
+    "heroSubheadline": {
+      "type": "string",
+      "maxLength": 140
+    },
+    "heroVideo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["videos", "files"],
+      "description": "Optional hero background video. If empty, heroImage is used."
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "introEyebrow": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "introHeading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 90
+    },
+    "introBody": {
+      "type": "richtext"
+    },
+    "villasHeading": {
+      "type": "string",
+      "default": "Our Villas",
+      "maxLength": 40
+    },
+    "experiencesHeading": {
+      "type": "string",
+      "default": "Marena Experience",
+      "maxLength": 60
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

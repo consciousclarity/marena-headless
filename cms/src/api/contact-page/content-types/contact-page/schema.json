@@ -1,0 +1,19 @@
+{
+  "kind": "singleType",
+  "collectionName": "contact_page",
+  "info": {
+    "singularName": "contact-page",
+    "pluralName": "contact-pages",
+    "displayName": "Contact Page"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "headline": { "type": "string", "required": true, "maxLength": 60 },
+    "intro": { "type": "richtext" },
+    "email": { "type": "email", "required": true },
+    "phone": { "type": "string" },
+    "whatsapp": { "type": "string" },
+    "address": { "type": "text" },
+    "mapEmbed": { "type": "text", "description": "Google Maps iframe URL (not the full iframe tag)." }
+  }
+}

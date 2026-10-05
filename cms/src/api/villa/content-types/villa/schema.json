@@ -1,0 +1,99 @@
+{
+  "kind": "collectionType",
+  "collectionName": "villas",
+  "info": {
+    "singularName": "villa",
+    "pluralName": "villas",
+    "displayName": "Villa",
+    "description": "A Marena villa (1, 2, or 4 bedroom). One entry per physical villa. The architect said the existing Divi villa pages were 'not special' — the schema is intentionally restrictive so a non-technical editor cannot break the editorial layout."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": { "localized": true }
+  },
+  "attributes": {
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true,
+      "regex": "^[a-z0-9-]+$",
+      "maxLength": 80
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 80
+    },
+    "tagline": {
+      "type": "string",
+      "required": true,
+      "maxLength": 120,
+      "description": "One-line hero subtitle. Hard cap 120 chars so it never wraps ugly on mobile."
+    },
+    "bedrooms": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 10
+    },
+    "maxGuests": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 30
+    },
+    "shortDescription": {
+      "type": "text",
+      "required": true,
+      "maxLength": 280,
+      "description": "Card blurb. 280 char cap (≈ 2 sentences)."
+    },
+    "longDescription": {
+      "type": "richtext",
+      "description": "Editorial copy. Use sparingly. Plain prose, no marketing fluff."
+    },
+    "features": {
+      "type": "json",
+      "required": true,
+      "description": "Array of {label, icon}. Keep under 8 items — the layout assumes 6-8 features max.",
+      "default": []
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"],
+      "description": "Hero image. Recommended 2400×1500 (8:5) landscape. Anything else will be letterboxed."
+    },
+    "gallery": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "min": 6,
+      "max": 10,
+      "allowedTypes": ["images"],
+      "description": "Curated gallery, 6–10 images only. Architect's directive: edit down, don't dump the full Divi photo set."
+    },
+    "priceFrom": {
+      "type": "decimal",
+      "min": 0
+    },
+    "currency": {
+      "type": "enumeration",
+      "enum": ["USD", "EUR", "IDR", "AUD"],
+      "default": "USD"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0,
+      "description": "Display order on /villas (lowest first). Use to put the 4BR flagship first."
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

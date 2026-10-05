@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "experiences",
+  "info": {
+    "singularName": "experience",
+    "pluralName": "experiences",
+    "displayName": "Experience",
+    "description": "One curated 'Marena Experience' (BBQ, Spa, Flowers, Wine, etc.). Per the architect, these are now anchor sections on a single /experiences page — not 8 separate sub-pages."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "regex": "^[a-z0-9-]+$"
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40
+    },
+    "icon": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"],
+      "description": "Small square icon (SVG or PNG, ideally 256×256). Used in the anchor nav strip."
+    },
+    "shortPitch": {
+      "type": "string",
+      "required": true,
+      "maxLength": 160
+    },
+    "longDescription": {
+      "type": "richtext"
+    },
+    "gallery": {
+      "type": "media",
+      "multiple": true,
+      "min": 2,
+      "max": 6,
+      "allowedTypes": ["images"]
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

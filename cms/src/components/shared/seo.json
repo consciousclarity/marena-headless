@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_shared_seos",
+  "info": { "displayName": "SEO", "icon": "earth" },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "metaTitle": { "type": "string", "required": true, "maxLength": 60 },
+    "metaDescription": { "type": "string", "required": true, "maxLength": 160 },
+    "ogImage": {
+      "type": "media", "multiple": false, "allowedTypes": ["images"],
+      "description": "Social share image. 1200×630 recommended."
+    },
+    "noindex": { "type": "boolean", "default": false }
+  }
+}
