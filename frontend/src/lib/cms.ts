@@ -5,7 +5,7 @@
  * invalidate exactly what changed.
  */
 
-const STRAPI_URL = process.env.STRAPI_URL || 'https://cms.marena.alp-see.com';
+const STRAPI_URL = process.env.STRAPI_URL || 'https://app.marena.alp-see.com';
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN || '';
 
 export type Image = {

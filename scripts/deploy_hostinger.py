@@ -131,7 +131,7 @@ def cms_env_for():
         {"key": "ADMIN_JWT_SECRET", "value": "jwt-marena-2026"},
         {"key": "TRANSFER_TOKEN_SALT", "value": "transfer-marena-2026"},
         {"key": "ENCRYPTION_KEY", "value": "enc-marena-2026"},
-        {"key": "PUBLIC_URL", "value": "https://cms.marena.alp-see.com"},
+        {"key": "PUBLIC_URL", "value": "https://app.marena.alp-see.com"},
         {"key": "DATABASE_CLIENT", "value": "mysql"},
         {"key": "DATABASE_HOST", "value": "127.0.0.1"},
         {"key": "DATABASE_PORT", "value": "3306"},
@@ -147,7 +147,7 @@ def cms_env_for():
 
 def fe_env_for():
     return [
-        {"key": "STRAPI_URL", "value": "https://cms.marena.alp-see.com"},
+        {"key": "STRAPI_URL", "value": "https://app.marena.alp-see.com"},
         {"key": "STRAPI_API_TOKEN", "value": "REPLACE_AFTER_CMS_FIRST_LOGIN"},
         {"key": "REVALIDATE_SECRET", "value": os.environ.get("REVALIDATE_SECRET", "mr-9d2e-f8a1-marena-bali-2026")},
         {"key": "NODE_ENV", "value": "production"},
@@ -209,7 +209,7 @@ def main():
 
     print("\nAll done. Verify:")
     print(f"  https://marena.alp-see.com/")
-    print(f"  https://cms.marena.alp-see.com/admin")
+    print(f"  https://app.marena.alp-see.com/admin")
 
 
 if __name__ == "__main__":
