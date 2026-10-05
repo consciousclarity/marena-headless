@@ -4,6 +4,10 @@ import { getVillaBySlug, getAllVillasSlugs, getAllVillas } from '@/lib/cms';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
+// Force runtime: pages depend on Strapi data, no useful prerender.
+export const dynamic = "force-dynamic";
+
+
 export const revalidate = 60;
 
 export async function generateStaticParams() {

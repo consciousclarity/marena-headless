@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm install --include=dev && next build",
     "start": "next start -p 3000",
     "lint": "next lint"
   },
@@ -26,5 +26,7 @@
     "postcss": "^8.4.47",
     "autoprefixer": "^10.4.20"
   },
-  "engines": { "node": ">=22.0.0" }
+  "engines": {
+    "node": ">=22.0.0"
+  }
 }

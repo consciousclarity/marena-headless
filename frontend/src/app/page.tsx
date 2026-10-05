@@ -3,6 +3,10 @@ import { getHomepage, getAllVillas, getAllExperiences } from '@/lib/cms';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
+// Force runtime: pages depend on Strapi data, no useful prerender.
+export const dynamic = "force-dynamic";
+
+
 export const revalidate = 60;
 
 export default async function HomePage() {

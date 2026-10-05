@@ -1,5 +1,9 @@
 import { getAllExperiences } from '@/lib/cms';
 
+// Force runtime: pages depend on Strapi data, no useful prerender.
+export const dynamic = "force-dynamic";
+
+
 export const revalidate = 60;
 
 export const metadata = { title: 'Marena Experience' };
