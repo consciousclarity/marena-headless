@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone', // Hostinger Node Web Apps serves from .next/standalone
+  // ponytail: skip `output: 'standalone'`. Hostinger's Node Web Apps
+  // run `npm start` directly, which serves the standard `.next` build.
+  // standalone is for self-bundled Docker deployments — overkill here.
   reactStrictMode: true,
   images: {
     remotePatterns: [
