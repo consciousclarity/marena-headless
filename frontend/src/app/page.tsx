@@ -1,6 +1,5 @@
 import { Hero } from '@/components/Hero';
 import { getHomepage, getAllVillas, getAllExperiences } from '@/lib/cms';
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 // Force runtime: pages depend on Strapi data, no useful prerender.
@@ -15,15 +14,32 @@ export default async function HomePage() {
     getAllVillas().catch(() => []),
     getAllExperiences().catch(() => []),
   ]);
-  if (!home) notFound();
+  // ponytail: render with fallback copy when Strapi is empty instead of
+  // 404ing. Once content is seeded this branch is never hit.
+  const safeHome = home ?? {
+    heroHeadline: 'A quieter way to be in Bali',
+    heroSubheadline: 'Hand-picked villas, curated experiences, zero noise.',
+    heroImage: null,
+    introEyebrow: 'Marena',
+    introHeading: 'Villas by Marena',
+    villasHeading: 'Three places, each its own rhythm.',
+    experiencesHeading: 'In-villa',
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const safeHeroImage: any = safeHome.heroImage ?? {
+    url: 'https://app.marena.alp-see.com/uploads/hero_placeholder_8e2d1c.jpg',
+    alternativeText: 'Bali villa at sunset',
+    width: 2400,
+    height: 1480,
+  };
 
   return (
     <main>
       <Hero
-        eyebrow={home.introEyebrow}
-        headline={home.heroHeadline}
-        subheadline={home.heroSubheadline}
-        image={home.heroImage}
+        eyebrow={safeHome.introEyebrow}
+        headline={safeHome.heroHeadline}
+        subheadline={safeHome.heroSubheadline}
+        image={safeHeroImage}
         ctaLabel="Explore the villas"
         ctaHref="/villas"
       />
@@ -33,7 +49,7 @@ export default async function HomePage() {
           Our villas
         </p>
         <h2 className="mb-[5.5rem] max-w-[55rem] font-serif text-[clamp(1.8rem,4.4vw,4.2rem)] leading-[1.08] tracking-[-0.025em]">
-          {home.villasHeading}
+          {safeHome.villasHeading}
         </h2>
         <div className="grid grid-cols-1 gap-x-[3.4rem] gap-y-[8.9rem] md:grid-cols-3">
           {villas.map((v) => (
@@ -63,7 +79,7 @@ export default async function HomePage() {
               In-villa
             </p>
             <h2 className="mb-[5.5rem] max-w-[55rem] font-serif text-[clamp(1.8rem,4.4vw,4.2rem)] leading-[1.08] tracking-[-0.025em]">
-              {home.experiencesHeading}
+              {safeHome.experiencesHeading}
             </h2>
             <div className="grid grid-cols-2 gap-x-[3.4rem] gap-y-[3.4rem] md:grid-cols-4">
               {experiences.map((x) => (
