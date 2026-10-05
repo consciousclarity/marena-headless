@@ -6,7 +6,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'cms.marena.alp-see.com' },
+      { protocol: 'https', hostname: 'app.marena.alp-see.com' },
       { protocol: 'https', hostname: 'staging.marenabali.com' }, // legacy WP uploads while migrating
     ],
     formats: ['image/avif', 'image/webp'],
