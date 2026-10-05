@@ -67,10 +67,26 @@ def main():
     target = sys.argv[1] if len(sys.argv) > 1 else "HEAD"
     sha = git("rev-parse", target)
     tree_sha = git("rev-parse", f"{target}^{{tree}}")
-    parent_ok = subprocess.call(["git", "rev-parse", f"{target}^"],
-                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
-    parent = git("rev-parse", f"{target}^") if parent_ok else None
     msg = git("log", "-1", "--pretty=%B", target)
+
+    # Resolve the parent to use: prefer the local ^ (works for force-pushes
+    # where local history was rewritten), fall back to the remote HEAD.
+    parent = None
+    if subprocess.call(["git", "rev-parse", f"{target}^"],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0:
+        local_parent = git("rev-parse", f"{target}^")
+        # Check if the remote knows about it
+        try:
+            r = api("GET", f"/repos/{REPO}/git/commits/{local_parent}")
+            parent = local_parent
+        except SystemExit:
+            # Local commit isn't on remote — fall back to remote HEAD
+            ref = api("GET", f"/repos/{REPO}/git/ref/heads/{BRANCH}")
+            parent = ref["object"]["sha"]
+            print(f"local parent {local_parent[:8]} not on remote, using remote HEAD {parent[:8]}")
+    else:
+        ref = api("GET", f"/repos/{REPO}/git/ref/heads/{BRANCH}")
+        parent = ref["object"]["sha"]
     print(f"commit {sha[:8]}  tree {tree_sha[:8]}  parent {parent[:8] if parent else '(root)'}")
 
     print("Uploading trees bottom-up:")
