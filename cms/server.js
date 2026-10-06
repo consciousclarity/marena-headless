@@ -71,13 +71,24 @@ console.log(`[parent] publishRoot = ${publishRoot}`);
 // The published tree has the cms source at <publishRoot>/_cms_src/ (not
 // <publishRoot>/cms/ — Hostinger's publisher strips subdirs named "cms"
 // from Next.js output, mistaking them for a separate Strapi webapp).
-const cmsSrc = path.join(publishRoot, '_cms_src');
+// Hostinger publishes the build output dir (cms/.next/) as <root>/.next/, and
+// this file runs from inside it, so _cms_src and node_modules sit next to
+// __dirname, not next to publishRoot. Check every plausible location.
+function _findDir(rel) {
+  const bases = [publishRoot, __dirname, path.join(publishRoot, '.next')];
+  for (const b of bases) {
+    const p = path.join(b, rel);
+    if (fs.existsSync(p)) return p;
+  }
+  throw new Error(`could not find ${rel} under ${bases.join(', ')}`);
+}
+const cmsSrc = _findDir('_cms_src');
 
 async function startStrapi() {
   process.chdir(cmsSrc);
   process.env.PORT = String(STRAPI_INTERNAL);
   process.env.HOST = '127.0.0.1';
-  const strapiFactory = require(path.join(publishRoot, 'node_modules', '@strapi', 'strapi'));
+  const strapiFactory = require(_findDir(path.join('node_modules', '@strapi', 'strapi')));
   const app = await strapiFactory({
     appDir: cmsSrc,
     distDir: path.join(cmsSrc, '.strapi'),
@@ -93,7 +104,9 @@ async function startNext() {
   // Next.js standalone boots on require; we just require it.
   // The standalone .next-standalone/server.js calls process.nextTick(http.createServer.listen)
   // which uses HOSTNAME+PORT env vars to bind.
-  process.chdir(path.join(publishRoot, 'frontend'));
+  // The standalone server chdirs to its own dir; only enter frontend/ if present.
+  const feDir = path.join(publishRoot, 'frontend');
+  if (fs.existsSync(feDir)) process.chdir(feDir);
   // Defer the require so the proxy can start first.
   setImmediate(() => {
     try {
