@@ -1,6 +1,6 @@
 """
 Deploy the Marena headless build (Strapi CMS + Next.js frontend) to
-marena.alp-see.com via the Hostinger REST API.
+alp-see.at via the Hostinger REST API.
 
 Flow per app:
   1. Generate TUS upload URL via /api/hosting/v1/files/upload-urls
@@ -19,8 +19,8 @@ import urllib.parse
 import urllib.request
 
 TOKEN = os.environ["HOSTINGER_API_TOKEN"]
-USERNAME = "u506698511"  # alp-see.com / marena.alp-see.com account
-DOMAIN = "marena.alp-see.com"
+USERNAME = "u506698511"  # alp-see.com / alp-see.at account
+DOMAIN = "alp-see.at"
 BASE = "https://developers.hostinger.com/api/hosting/v1"
 
 
@@ -131,7 +131,7 @@ def cms_env_for():
         {"key": "ADMIN_JWT_SECRET", "value": "jwt-marena-2026"},
         {"key": "TRANSFER_TOKEN_SALT", "value": "transfer-marena-2026"},
         {"key": "ENCRYPTION_KEY", "value": "enc-marena-2026"},
-        {"key": "PUBLIC_URL", "value": "https://app.marena.alp-see.com"},
+        {"key": "PUBLIC_URL", "value": "https://alp-see.at"},
         {"key": "DATABASE_CLIENT", "value": "mysql"},
         {"key": "DATABASE_HOST", "value": "127.0.0.1"},
         {"key": "DATABASE_PORT", "value": "3306"},
@@ -140,14 +140,14 @@ def cms_env_for():
         {"key": "DATABASE_PASSWORD", "value": os.environ["MARENABALI_STRAPI_DB_PASSWORD"]},
         {"key": "DATABASE_SSL", "value": "false"},
         {"key": "REVALIDATE_SECRET", "value": os.environ.get("REVALIDATE_SECRET", "mr-9d2e-f8a1-marena-bali-2026")},
-        {"key": "FRONTEND_REVALIDATE_URL", "value": "https://marena.alp-see.com/api/revalidate"},
+        {"key": "FRONTEND_REVALIDATE_URL", "value": "https://alp-see.at/api/revalidate"},
         {"key": "NODE_ENV", "value": "production"},
     ]
 
 
 def fe_env_for():
     return [
-        {"key": "STRAPI_URL", "value": "https://app.marena.alp-see.com"},
+        {"key": "STRAPI_URL", "value": "https://alp-see.at"},
         {"key": "STRAPI_API_TOKEN", "value": "REPLACE_AFTER_CMS_FIRST_LOGIN"},
         {"key": "REVALIDATE_SECRET", "value": os.environ.get("REVALIDATE_SECRET", "mr-9d2e-f8a1-marena-bali-2026")},
         {"key": "NODE_ENV", "value": "production"},
@@ -208,8 +208,8 @@ def main():
         deploy_app("frontend", fe_zip, None, "build", fe_env_for(), entry_file=None, archive_subdir=".")
 
     print("\nAll done. Verify:")
-    print(f"  https://marena.alp-see.com/")
-    print(f"  https://app.marena.alp-see.com/admin")
+    print(f"  https://alp-see.at/")
+    print(f"  https://alp-see.at/admin")
 
 
 if __name__ == "__main__":
