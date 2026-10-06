@@ -95,10 +95,44 @@ async function startStrapi() {
     appDir: cmsSrc,
     distDir: path.join(cmsSrc, '.strapi'),
   });
-  // start() = load() + listen(); listen() binds to server.host/port from
-  // config/server.ts, which reads the HOST/PORT env vars set above.
-  await app.start();
+  // Hostinger's runtime log API only keeps JSON console lines, so Strapi's own
+  // plain-text logger output is invisible. Log each stage through console.
+  const t0 = Date.now();
+  const beat = setInterval(() => console.log(`[parent] still starting Strapi (${Math.round((Date.now() - t0) / 1000)}s)`), 15000);
+  try {
+    await checkDb();
+    console.log('[parent] Strapi load() ...');
+    await app.load();
+    console.log(`[parent] Strapi loaded in ${Date.now() - t0}ms; listen() on :${STRAPI_INTERNAL}`);
+    // listen() binds to server.host/port from config/server.ts, which reads
+    // the HOST/PORT env vars set above.
+    await app.listen();
+  } finally {
+    clearInterval(beat);
+  }
   return app;
+}
+
+// Quick MySQL reachability/auth check so a bad DB config shows up in the logs
+// instead of as a silent hang. Never logs credentials.
+async function checkDb() {
+  if (process.env.DATABASE_CLIENT !== 'mysql') return;
+  try {
+    const mysql = require(_findDir(path.join('node_modules', 'mysql2')));
+    const conn = await mysql.createConnection({
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT || '3306', 10),
+      user: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+      connectTimeout: 8000,
+    });
+    await conn.query('SELECT 1');
+    await conn.end();
+    console.log(`[parent] DB ok (${process.env.DATABASE_USERNAME}@${process.env.DATABASE_HOST}/${process.env.DATABASE_NAME})`);
+  } catch (e) {
+    console.error(`[parent] DB check failed: ${e.code || ''} ${e.message}`);
+  }
 }
 
 async function startNext() {
