@@ -7,6 +7,7 @@ import base64
 import json
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -27,11 +28,23 @@ def api(method, path, body=None):
         },
         data=json.dumps(body).encode() if body is not None else None,
     )
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
+    def _send():
+        with urllib.request.urlopen(req, timeout=120) as r:
             return json.loads(r.read())
-    except urllib.error.HTTPError as e:
-        raise SystemExit(f"{method} {path} -> {e.code} {e.read().decode()}") from None
+    # Retry up to 5 times on transient errors (5xx, RemoteDisconnected).
+    last_err = None
+    for attempt in range(5):
+        try:
+            return _send()
+        except urllib.error.HTTPError as e:
+            if e.code < 500:
+                raise SystemExit(f"{method} {path} -> {e.code} {e.read().decode()}") from None
+            last_err = e
+            time.sleep(2 ** attempt)
+        except Exception as e:  # RemoteDisconnected, URLError, etc.
+            last_err = e
+            time.sleep(2 ** attempt)
+    raise SystemExit(f"{method} {path} -> gave up after 5 attempts: {last_err}")
 
 
 def git(*args):

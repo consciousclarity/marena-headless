@@ -1,12 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // ponytail: skip `output: 'standalone'`. Hostinger's Node Web Apps
-  // run `npm start` directly, which serves the standard `.next` build.
-  // standalone is for self-bundled Docker deployments — overkill here.
+  // Standalone build — cms/server.js boots Strapi + the standalone Next.js
+  // server as children and reverse-proxies between them. One Node process,
+  // one domain. ponytail: re-evaluate when traffic exceeds one process.
+  output: 'standalone',
   reactStrictMode: true,
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'app.marena.alp-see.com' },
+      { protocol: 'https', hostname: 'marena.alp-see.com' },
       { protocol: 'https', hostname: 'staging.marenabali.com' }, // legacy WP uploads while migrating
     ],
     formats: ['image/avif', 'image/webp'],

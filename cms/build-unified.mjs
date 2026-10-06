@@ -16,7 +16,8 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const repoRoot = resolve(__dirname, "../..");
+// Script lives in cms/, so the repo root is one level up.
+const repoRoot = resolve(__dirname, "..");
 
 function isWindows() {
   return process.platform === "win32";
@@ -49,10 +50,14 @@ async function main() {
   const cmsDir = resolve(repoRoot, "cms");
 
   // 1a. Install (with devDeps) — done here, not inside `npm run build`,
-  //     because npm 11 propagates --ignore-scripts down into child npm
-  //     invocations and blocks the sharp postinstall.
+  //     because npm 11 propagates strict allow-scripts down into child npm
+  //     invocations and blocks the sharp postinstall. We force NODE_ENV=development
+  //     so the install runs (sharp's binary download is otherwise blocked).
   console.log("▸ installing frontend deps (with dev)...");
-  await run(npmCmd(), ["install", "--include=dev", "--foreground-scripts"], { cwd: frontendDir });
+  await run(npmCmd(), ["install", "--include=dev", "--foreground-scripts"], {
+    cwd: frontendDir,
+    env: { NODE_ENV: "development" },
+  });
 
   // 1b. Next.js standalone build
   console.log("▸ building Next.js (standalone)...");
@@ -73,9 +78,15 @@ async function main() {
 
   // 2. Strapi build
   console.log("▸ installing CMS deps...");
-  await run(npmCmd(), ["install", "--include=dev", "--foreground-scripts"], { cwd: cmsDir });
+  await run(npmCmd(), ["install", "--include=dev", "--foreground-scripts"], {
+    cwd: cmsDir,
+    env: { NODE_ENV: "development" },
+  });
   console.log("▸ building Strapi...");
-  await run(npmCmd(), ["run", "build"], { cwd: cmsDir });
+  await run(npmCmd(), ["run", "build"], {
+    cwd: cmsDir,
+    env: { NODE_ENV: "production" },
+  });
 
   // 3. Copy Next.js static assets into cms/public/_next/ so the standalone
   //    server (running as a child of cms/server.js) can find them.
