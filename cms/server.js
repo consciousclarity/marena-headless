@@ -16,6 +16,7 @@
 const http = require('http');
 const { spawn } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 
 const PUBLIC_PORT = parseInt(process.env.PORT, 10) || 1337;
 const STRAPI_INTERNAL = PUBLIC_PORT + 1;
@@ -56,18 +57,21 @@ function spawnChild(name, cmd, args, env, cwd) {
 }
 
 // Resolve the node binary that the Hostinger runtime can actually exec.
-// process.execPath lies — it points to the build-image path, not the runtime.
+// process.execPath at runtime is /opt/alt/alt-nodejs22/root/usr/bin/node
+// (confirmed by Hostinger logs) — we list it first.
 function resolveNodeBin() {
   if (process.env.HOSTINGER_NODE_PATH && fs.existsSync(process.env.HOSTINGER_NODE_PATH)) {
     return process.env.HOSTINGER_NODE_PATH;
   }
   const candidates = [
+    process.execPath,                                  // runtime path (varies)
+    '/opt/alt/alt-nodejs22/root/usr/bin/node',         // Hostinger Alt
+    '/opt/alt/alt-nodejs20/root/usr/bin/node',
     '/usr/bin/node',
     '/usr/local/bin/node',
-    process.execPath, // works on local dev and most CI
   ];
   for (const p of candidates) {
-    try { if (fs.existsSync(p)) return p; } catch {}
+    if (p && fs.existsSync(p)) return p;
   }
   // Last resort: defer to spawn's PATH lookup.
   return 'node';
