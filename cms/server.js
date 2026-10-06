@@ -1,57 +1,59 @@
 /**
- * Unified entry point for alp-see.at.
+ * Unified entry point for alp-see.at (Strapi v5 CMS + Next.js frontend).
  *
- * Boots two child processes:
- *   - Strapi on PORT+1 -> /admin, /api/*, /uploads/*
- *   - Next.js standalone on PORT+2 -> everything else (the frontend)
+ * One process, one listener. Hostinger's Node runtime only honours the FIRST
+ * http.Server.listen() call in a process ("listen() was called more than once,
+ * ignore") and binds it to the public socket, so Strapi and Next.js cannot run
+ * on their own internal ports. Instead:
  *
- * The parent process is an http reverse-proxy that forwards each request
- * to the right child based on URL prefix. Hostinger only sees one entry
- * point (this file), one port, one process tree.
+ *   - this file creates the only HTTP server and listens first;
+ *   - Strapi is loaded in-process and served through its Koa request callback
+ *     (/admin, /api/*, /uploads/*, /_health);
+ *   - Next.js is loaded in-process through its custom-server API and serves
+ *     everything else.
  *
- * ponytail: single-process design. Split into 2 Hostinger Node apps
- * (or move to a real VPS) when traffic exceeds what one Node process
- * can handle.
+ * Requests get 503 until the backend they need has finished starting.
  */
 const http = require('http');
-const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
+// ---------------------------------------------------------------------------
+// Diagnostics. Hostinger's runtime log API only keeps JSON console lines, while
+// Strapi's logger writes plain text to stdout/stderr and calls process.exit on
+// fatal errors, so mirror both through console.
+// ---------------------------------------------------------------------------
+let _forwarding = false;
+for (const stream of ['stdout', 'stderr']) {
+  const orig = process[stream].write.bind(process[stream]);
+  process[stream].write = (chunk, ...rest) => {
+    if (!_forwarding) {
+      _forwarding = true;
+      try {
+        String(chunk).split('\n').forEach((l) => {
+          const line = l.replace(/\x1b\[[0-9;]*m/g, '').trim();
+          if (line && !/^(\[parent\]|\[out\]|\{)/.test(line)) console.log(`[out] ${line}`);
+        });
+      } finally {
+        _forwarding = false;
+      }
+    }
+    return orig(chunk, ...rest);
+  };
+}
+const _exit = process.exit.bind(process);
+process.exit = (code) => {
+  console.error(`[parent] process.exit(${code}) called from: ${new Error().stack.split('\n').slice(2, 6).join(' | ')}`);
+  return _exit(code);
+};
+
 const PUBLIC_PORT = parseInt(process.env.PORT, 10) || 1337;
-const STRAPI_INTERNAL = PUBLIC_PORT + 1;
-const NEXTJS_INTERNAL = PUBLIC_PORT + 2;
 
-function waitForPort(port, name, timeoutMs = 30000) {
-  const start = Date.now();
-  return new Promise((resolve, reject) => {
-    const tryOnce = () => {
-      const req = http.request({ host: '127.0.0.1', port, method: 'HEAD', timeout: 1000 }, () => {
-        resolve();
-      });
-      req.on('error', () => {
-        if (Date.now() - start > timeoutMs) {
-          reject(new Error(`${name} didn't start within ${timeoutMs}ms`));
-        } else {
-          setTimeout(tryOnce, 250);
-        }
-      });
-      req.end();
-    };
-    tryOnce();
-  });
-}
-
-const children = [];
-
-function spawnChild(name, cmd, args, env, cwd) {
-  // ponytail: Hostinger's runtime sandbox blocks execve() of /opt/alt/* binaries
-  // (ENOENT even when the file exists). We use a no-op stub here; Strapi and
-  // Next.js are loaded IN-PROCESS via startStrapi/startNext below.
-  console.warn(`[parent] spawnChild(${name}) is a no-op; using in-process start`);
-  return { on() {}, kill() {} };
-}
-
+// ---------------------------------------------------------------------------
+// Locating the published files. Hostinger publishes the build output dir
+// (cms/.next/) as <root>/.next/ and runs this file from inside it, so _cms_src
+// and node_modules sit next to __dirname, while .next-standalone sits one up.
+// ---------------------------------------------------------------------------
 function _resolvePublishRoot() {
   const candidates = [
     __dirname,                          // cms/ (local)
@@ -66,104 +68,175 @@ function _resolvePublishRoot() {
 const publishRoot = _resolvePublishRoot();
 console.log(`[parent] publishRoot = ${publishRoot}`);
 
-// ponytail: Hostinger's runtime sandbox blocks spawn() of any node binary.
-// Load Strapi and Next.js as in-process libraries instead.
-// The published tree has the cms source at <publishRoot>/_cms_src/ (not
-// <publishRoot>/cms/ — Hostinger's publisher strips subdirs named "cms"
-// from Next.js output, mistaking them for a separate Strapi webapp).
-const cmsSrc = path.join(publishRoot, '_cms_src');
+function _findDir(rel) {
+  const bases = [publishRoot, __dirname, path.join(publishRoot, '.next')];
+  for (const b of bases) {
+    const p = path.join(b, rel);
+    if (fs.existsSync(p)) return p;
+  }
+  throw new Error(`could not find ${rel} under ${bases.join(', ')}`);
+}
 
+// The published tree has the cms source at _cms_src/ (not cms/ — Hostinger's
+// publisher strips subdirs named "cms" from Next.js output).
+const cmsSrc = _findDir('_cms_src');
+const standaloneDir = path.join(publishRoot, '.next-standalone');
+
+// ---------------------------------------------------------------------------
+// Strapi (in-process, no port)
+// ---------------------------------------------------------------------------
 async function startStrapi() {
   process.chdir(cmsSrc);
-  process.env.PORT = String(STRAPI_INTERNAL);
-  process.env.HOST = '127.0.0.1';
-  const strapiFactory = require(path.join(publishRoot, 'node_modules', '@strapi', 'strapi'));
-  const app = await strapiFactory({
-    appDir: cmsSrc,
-    distDir: path.join(cmsSrc, '.strapi'),
-  }).load();
-  return new Promise((resolve) => {
-    app.listen(STRAPI_INTERNAL, '127.0.0.1', () => resolve(app));
-  });
+  // Strapi's config/server.ts reads these even though nothing binds a port.
+  process.env.HOST = process.env.HOST || '127.0.0.1';
+  process.env.STRAPI_TELEMETRY_DISABLED = process.env.STRAPI_TELEMETRY_DISABLED || 'true';
+
+  const strapiMod = require(_findDir(path.join('node_modules', '@strapi', 'strapi')));
+  // Strapi v5 exports the factory as a named export; v4 exported it directly.
+  const createStrapi = strapiMod.createStrapi || strapiMod.default?.createStrapi || strapiMod;
+
+  // TypeScript project: `strapi build` compiles config/ and src/ (and the admin
+  // bundle) into dist/, which is where Strapi loads them from at runtime.
+  const distDir = fs.existsSync(path.join(cmsSrc, 'dist')) ? path.join(cmsSrc, 'dist') : cmsSrc;
+  console.log(`[parent] Strapi appDir=${cmsSrc} distDir=${distDir}`);
+
+  // The upload provider refuses to start if <public>/uploads is missing, and
+  // the empty uploads/ dir is not part of the published build (nor of git).
+  const publicDir = path.resolve(cmsSrc, process.env.PUBLIC_DIR || './public');
+  fs.mkdirSync(path.join(publicDir, 'uploads'), { recursive: true });
+  console.log(`[parent] Strapi public dir: ${publicDir}`);
+
+  const app = createStrapi({ appDir: cmsSrc, distDir });
+  const t0 = Date.now();
+  console.log('[parent] Strapi load() ...');
+  await app.load();
+  // Strapi.listen() would call server.listen() (ignored here) and then
+  // postListen(); do the equivalent without a socket.
+  app.server.mount();
+  await app.postListen();
+  console.log(`[parent] Strapi ready in ${Date.now() - t0}ms`);
+  return app.server.app.callback();
+}
+
+// ---------------------------------------------------------------------------
+// Next.js (in-process, no port)
+// ---------------------------------------------------------------------------
+function _loadStandaloneConfig() {
+  // The standalone server.js embeds the resolved next.config as one JSON line
+  // and hands it to Next through this env var; replicate that.
+  const src = fs.readFileSync(path.join(standaloneDir, 'server.js'), 'utf8');
+  const m = src.match(/^const nextConfig = (\{.*\})\s*$/m);
+  if (m) process.env.__NEXT_PRIVATE_STANDALONE_CONFIG = m[1];
+  else console.warn('[parent] could not find embedded nextConfig in standalone server.js');
+}
+
+function _ensureNextStatic() {
+  // Standalone output omits .next/static; the full build copy has it.
+  const dst = path.join(standaloneDir, '.next', 'static');
+  if (fs.existsSync(dst)) return;
+  for (const base of [path.join(publishRoot, '.next'), __dirname]) {
+    const src = path.join(base, 'static');
+    if (fs.existsSync(src)) {
+      fs.cpSync(src, dst, { recursive: true });
+      console.log(`[parent] copied Next static assets from ${src}`);
+      return;
+    }
+  }
+  console.warn('[parent] no Next static assets found; /_next/static will 404');
+}
+
+function _requireNext() {
+  const candidates = [
+    path.join(standaloneDir, 'node_modules', 'next'),
+    path.join(publishRoot, '.next', 'node_modules_frontend', 'next'),
+    path.join(__dirname, 'node_modules_frontend', 'next'),
+  ];
+  const found = candidates.find((c) => fs.existsSync(c));
+  if (!found) throw new Error(`could not find the next package in: ${candidates.join(', ')}`);
+  console.log(`[parent] using next from ${found}`);
+  const mod = require(found);
+  return mod.default || mod;
 }
 
 async function startNext() {
-  process.env.PORT = String(NEXTJS_INTERNAL);
-  process.env.HOSTNAME = '127.0.0.1';
-  // Next.js standalone boots on require; we just require it.
-  // The standalone .next-standalone/server.js calls process.nextTick(http.createServer.listen)
-  // which uses HOSTNAME+PORT env vars to bind.
-  process.chdir(path.join(publishRoot, 'frontend'));
-  // Defer the require so the proxy can start first.
-  setImmediate(() => {
-    try {
-      require(path.join(publishRoot, '.next-standalone', 'server.js'));
-    } catch (e) {
-      console.error('[parent] next standalone require failed:', e);
-    }
-  });
+  process.env.NODE_ENV = 'production';
+  _loadStandaloneConfig();
+  _ensureNextStatic();
+  const next = _requireNext();
+
+  const prevCwd = process.cwd();
+  process.chdir(standaloneDir); // Next's standalone layout expects cwd = its own dir
+  try {
+    const t0 = Date.now();
+    console.log(`[parent] Next.js prepare() in ${standaloneDir}`);
+    const nextApp = next({ dev: false, dir: standaloneDir, hostname: '127.0.0.1', port: PUBLIC_PORT });
+    await nextApp.prepare();
+    console.log(`[parent] Next.js ready in ${Date.now() - t0}ms`);
+    return nextApp.getRequestHandler();
+  } finally {
+    process.chdir(prevCwd);
+  }
 }
 
-async function main() {
-  // ponytail: in-process start (sandbox blocks execve of /opt/alt/* binaries).
-  console.log(`[parent] starting Strapi on :${STRAPI_INTERNAL}`);
-  await startStrapi();
-  await waitForPort(STRAPI_INTERNAL, 'Strapi');
-  console.log(`[parent] Strapi ready on :${STRAPI_INTERNAL}`);
+// ---------------------------------------------------------------------------
+// Main: the one and only listener, listening first.
+// ---------------------------------------------------------------------------
+const isStrapiPath = (url) =>
+  url === '/api' ||
+  url.startsWith('/api/') ||
+  url.startsWith('/admin') ||
+  url.startsWith('/uploads/') ||
+  url === '/_health';
 
-  console.log(`[parent] starting Next.js on :${NEXTJS_INTERNAL}`);
-  await startNext();
-  await waitForPort(NEXTJS_INTERNAL, 'Next.js');
-  console.log(`[parent] Next.js ready on :${NEXTJS_INTERNAL}`);
+async function main() {
+  const handlers = { strapi: null, next: null };
 
   const server = http.createServer((req, res) => {
     const url = req.url || '/';
-    const isApi =
-      url.startsWith('/api/') ||
-      url.startsWith('/admin') ||
-      url.startsWith('/uploads/') ||
-      url === '/_health';
-    const targetPort = isApi ? STRAPI_INTERNAL : NEXTJS_INTERNAL;
-    const proxyHeaders = { ...req.headers };
-    // Override Host to the internal address so Next.js's canonical-URL
-    // detection doesn't 307-redirect to the public hostname we forwarded in.
-    proxyHeaders.host = `127.0.0.1:${targetPort}`;
-    // Tell upstreams they're behind a proxy so they trust X-Forwarded-Proto.
-    proxyHeaders['x-forwarded-host'] = process.env.PUBLIC_URL
-      ? new URL(process.env.PUBLIC_URL).host
-      : 'alp-see.at';
-    proxyHeaders['x-forwarded-proto'] = 'https';
-    const proxyReq = http.request(
-      {
-        host: '127.0.0.1',
-        port: targetPort,
-        method: req.method,
-        path: url,
-        headers: proxyHeaders,
-      },
-      (proxyRes) => {
-        res.writeHead(proxyRes.statusCode || 502, proxyRes.headers);
-        proxyRes.pipe(res);
-      }
-    );
-    proxyReq.on('error', (err) => {
-      console.error(`[proxy] ${targetPort} <- ${url}: ${err.message}`);
-      if (!res.headersSent) res.writeHead(502, { 'Content-Type': 'text/plain' });
-      res.end(`Bad gateway: ${err.message}`);
-    });
-    req.pipe(proxyReq);
+    // The frontend's own /api/revalidate route is a Next.js route, not Strapi's.
+    const which = !url.startsWith('/api/revalidate') && isStrapiPath(url) ? 'strapi' : 'next';
+    const handler = handlers[which];
+    if (!handler) {
+      res.writeHead(503, { 'Content-Type': 'text/plain', 'Retry-After': '5' });
+      res.end('Starting up, please retry in a few seconds.');
+      return;
+    }
+    const fail = (err) => {
+      console.error(`[${which}] request failed: ${url}: ${err && err.stack ? err.stack : err}`);
+      if (!res.headersSent) res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Internal server error');
+    };
+    try {
+      Promise.resolve(handler(req, res)).catch(fail);
+    } catch (err) {
+      fail(err);
+    }
   });
 
-  server.listen(PUBLIC_PORT, '0.0.0.0', () => {
-    console.log(`[parent] Marena unified on :${PUBLIC_PORT} -> Strapi(:${STRAPI_INTERNAL}) + Next.js(:${NEXTJS_INTERNAL})`);
+  await new Promise((resolve) => {
+    server.listen(PUBLIC_PORT, '0.0.0.0', () => {
+      console.log(`[parent] Marena listening on :${PUBLIC_PORT} (Strapi + Next.js in-process)`);
+      resolve();
+    });
   });
+
+  // Start one after the other (both touch the working directory while loading).
+  // A failure in one is logged and leaves it returning 503 instead of taking the
+  // other down.
+  try {
+    handlers.strapi = await startStrapi();
+  } catch (e) {
+    console.error(`[parent] Strapi failed to start: ${e && e.stack ? e.stack : e}`);
+  }
+  try {
+    handlers.next = await startNext();
+  } catch (e) {
+    console.error(`[parent] Next.js failed to start: ${e && e.stack ? e.stack : e}`);
+  }
 
   const shutdown = (sig) => {
     console.log(`[parent] ${sig} received, shutting down`);
-    server.close(() => {
-      for (const { child } of children) child.kill(sig);
-      process.exit(0);
-    });
+    server.close(() => process.exit(0));
     setTimeout(() => process.exit(1), 5000).unref();
   };
   process.on('SIGINT', () => shutdown('SIGINT'));
