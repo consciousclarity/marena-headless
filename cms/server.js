@@ -34,6 +34,15 @@ for (const stream of ['stdout', 'stderr']) {
     return orig(chunk, ...rest);
   };
 }
+// Hostinger's Node runtime may rewrite the first listen() call onto its own
+// socket, so record what each call actually binds.
+const _netListen = require('net').Server.prototype.listen;
+require('net').Server.prototype.listen = function (...args) {
+  const shown = args.filter((a) => typeof a !== 'function').map((a) => JSON.stringify(a)).join(', ');
+  console.log(`[parent] listen(${shown})`);
+  this.once('listening', () => console.log(`[parent] listening at ${JSON.stringify(this.address())}`));
+  return _netListen.apply(this, args);
+};
 const _exit = process.exit.bind(process);
 process.exit = (code) => {
   console.error(`[parent] process.exit(${code}) called from: ${new Error().stack.split('\n').slice(2, 6).join(' | ')}`);
@@ -52,17 +61,20 @@ const NEXTJS_INTERNAL = PUBLIC_PORT + 2;
 function waitForPort(port, name, timeoutMs = 30000) {
   const start = Date.now();
   return new Promise((resolve, reject) => {
+    const retry = (why) => {
+      if (Date.now() - start > timeoutMs) {
+        reject(new Error(`${name} didn't answer on :${port} within ${timeoutMs}ms (${why})`));
+      } else {
+        setTimeout(tryOnce, 250);
+      }
+    };
     const tryOnce = () => {
-      const req = http.request({ host: '127.0.0.1', port, method: 'HEAD', timeout: 1000 }, () => {
+      const req = http.request({ host: '127.0.0.1', port, method: 'HEAD', path: '/', timeout: 2000 }, (res) => {
+        res.resume();
         resolve();
       });
-      req.on('error', () => {
-        if (Date.now() - start > timeoutMs) {
-          reject(new Error(`${name} didn't start within ${timeoutMs}ms`));
-        } else {
-          setTimeout(tryOnce, 250);
-        }
-      });
+      req.on('timeout', () => req.destroy(new Error('timeout')));
+      req.on('error', (e) => retry(e.code || e.message));
       req.end();
     };
     tryOnce();
@@ -188,17 +200,9 @@ async function startNext() {
 }
 
 async function main() {
-  // ponytail: in-process start (sandbox blocks execve of /opt/alt/* binaries).
-  console.log(`[parent] starting Strapi on :${STRAPI_INTERNAL}`);
-  await startStrapi();
-  await waitForPort(STRAPI_INTERNAL, 'Strapi');
-  console.log(`[parent] Strapi ready on :${STRAPI_INTERNAL}`);
-
-  console.log(`[parent] starting Next.js on :${NEXTJS_INTERNAL}`);
-  await startNext();
-  await waitForPort(NEXTJS_INTERNAL, 'Next.js');
-  console.log(`[parent] Next.js ready on :${NEXTJS_INTERNAL}`);
-
+  // The reverse proxy must be the first thing to call listen(): on Hostinger the
+  // first listen() is the public entry point, so Strapi/Next.js must not get it.
+  const ready = { strapi: false, next: false };
   const server = http.createServer((req, res) => {
     const url = req.url || '/';
     const isApi =
@@ -206,6 +210,12 @@ async function main() {
       url.startsWith('/admin') ||
       url.startsWith('/uploads/') ||
       url === '/_health';
+    const up = isApi ? ready.strapi : ready.next;
+    if (!up) {
+      res.writeHead(503, { 'Content-Type': 'text/plain', 'Retry-After': '5' });
+      res.end('Starting up, please retry in a few seconds.');
+      return;
+    }
     const targetPort = isApi ? STRAPI_INTERNAL : NEXTJS_INTERNAL;
     const proxyHeaders = { ...req.headers };
     // Override Host to the internal address so Next.js's canonical-URL
@@ -237,9 +247,33 @@ async function main() {
     req.pipe(proxyReq);
   });
 
-  server.listen(PUBLIC_PORT, '0.0.0.0', () => {
-    console.log(`[parent] Marena unified on :${PUBLIC_PORT} -> Strapi(:${STRAPI_INTERNAL}) + Next.js(:${NEXTJS_INTERNAL})`);
+  await new Promise((resolve) => {
+    server.listen(PUBLIC_PORT, '0.0.0.0', () => {
+      console.log(`[parent] Marena proxy listening on :${PUBLIC_PORT} -> Strapi(:${STRAPI_INTERNAL}) + Next.js(:${NEXTJS_INTERNAL})`);
+      resolve();
+    });
   });
+
+  // ponytail: in-process start (sandbox blocks execve of /opt/alt/* binaries).
+  console.log(`[parent] starting Strapi on :${STRAPI_INTERNAL}`);
+  await startStrapi();
+  try {
+    await waitForPort(STRAPI_INTERNAL, 'Strapi');
+    ready.strapi = true;
+    console.log(`[parent] Strapi ready on :${STRAPI_INTERNAL}`);
+  } catch (e) {
+    console.error(`[parent] ${e.message}`);
+  }
+
+  console.log(`[parent] starting Next.js on :${NEXTJS_INTERNAL}`);
+  await startNext();
+  try {
+    await waitForPort(NEXTJS_INTERNAL, 'Next.js');
+    ready.next = true;
+    console.log(`[parent] Next.js ready on :${NEXTJS_INTERNAL}`);
+  } catch (e) {
+    console.error(`[parent] ${e.message}`);
+  }
 
   const shutdown = (sig) => {
     console.log(`[parent] ${sig} received, shutting down`);
