@@ -119,7 +119,7 @@ async function startStrapi() {
 async function checkDb() {
   if (process.env.DATABASE_CLIENT !== 'mysql') return;
   try {
-    const mysql = require(_findDir(path.join('node_modules', 'mysql2')));
+    const mysql = require(_findDir(path.join('node_modules', 'mysql2', 'promise.js')));
     const conn = await mysql.createConnection({
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT || '3306', 10),

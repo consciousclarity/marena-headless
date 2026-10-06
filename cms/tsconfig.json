@@ -9,7 +9,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": false,
-    "noEmit": true,
+    "noEmit": false,
     "outDir": "dist"
   },
   "include": ["./", "config/**/*", "src/**/*", "node_modules/@strapi/**/*"],
