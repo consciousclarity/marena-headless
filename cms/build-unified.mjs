@@ -162,7 +162,7 @@ async function main() {
   await rm(cmsPublish, { recursive: true, force: true });
   await mkdir(cmsPublish, { recursive: true });
   for (const entry of [
-    "config", "src", "package.json", ".strapi", "public",
+    "config", "src", "package.json", ".strapi", "dist", "public",
     "database", "scripts", "tsconfig.json", ".env",
   ]) {
     const src = resolve(cmsDir, entry);

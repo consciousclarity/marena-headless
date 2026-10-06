@@ -91,10 +91,11 @@ async function startStrapi() {
   const strapiMod = require(_findDir(path.join('node_modules', '@strapi', 'strapi')));
   // Strapi v5 exports the factory as a named export; v4 exported it directly.
   const createStrapi = strapiMod.createStrapi || strapiMod.default?.createStrapi || strapiMod;
-  const app = createStrapi({
-    appDir: cmsSrc,
-    distDir: path.join(cmsSrc, '.strapi'),
-  });
+  // TypeScript project: `strapi build` compiles config/ and src/ (and the admin
+  // bundle) into dist/, which is where Strapi loads them from at runtime.
+  const distDir = fs.existsSync(path.join(cmsSrc, 'dist')) ? path.join(cmsSrc, 'dist') : cmsSrc;
+  console.log(`[parent] Strapi appDir=${cmsSrc} distDir=${distDir}`);
+  const app = createStrapi({ appDir: cmsSrc, distDir });
   // Hostinger's runtime log API only keeps JSON console lines, so Strapi's own
   // plain-text logger output is invisible. Log each stage through console.
   const t0 = Date.now();
