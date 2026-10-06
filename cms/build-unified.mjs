@@ -153,10 +153,12 @@ async function main() {
   }
 
   // 6. Copy the cms/ source tree (config/, src/, package.json, .strapi/)
-  //    into cms/.next/cms/ so the in-process Strapi load can find its files.
-  //    Skip node_modules/ and .next/ to avoid bloating the publish dir.
-  const cmsPublish = resolve(cmsDir, ".next", "cms");
-  console.log("▸ copying cms source tree into cms/.next/cms/ for publish...");
+  //    into cms/.next/_cms_src/ so the in-process Strapi load can find its
+  //    files. The dir name is "_cms_src" (with underscore) to dodge the
+  //    Hostinger publisher's heuristic that strips subdirs named "cms" from
+  //    the Next.js output (it mistakes them for the Strapi webapp).
+  const cmsPublish = resolve(cmsDir, ".next", "_cms_src");
+  console.log("▸ copying cms source tree into cms/.next/_cms_src/ for publish...");
   await rm(cmsPublish, { recursive: true, force: true });
   await mkdir(cmsPublish, { recursive: true });
   for (const entry of [

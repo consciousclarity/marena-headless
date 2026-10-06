@@ -54,15 +54,19 @@ function spawnChild(name, cmd, args, env, cwd) {
 
 // ponytail: Hostinger's runtime sandbox blocks spawn() of any node binary.
 // Load Strapi and Next.js as in-process libraries instead.
+// The published tree has the cms source at <publishRoot>/_cms_src/ (not
+// <publishRoot>/cms/ — Hostinger's publisher strips subdirs named "cms"
+// from Next.js output, mistaking them for a separate Strapi webapp).
+const cmsSrc = path.join(publishRoot, '_cms_src');
+
 async function startStrapi() {
-  // The published tree has cms/ at <publishRoot>/cms/ (config, .strapi, etc.)
-  process.chdir(path.join(publishRoot, 'cms'));
+  process.chdir(cmsSrc);
   process.env.PORT = String(STRAPI_INTERNAL);
   process.env.HOST = '127.0.0.1';
   const strapiFactory = require(path.join(publishRoot, 'node_modules', '@strapi', 'strapi'));
   const app = await strapiFactory({
-    appDir: path.join(publishRoot, 'cms'),
-    distDir: path.join(publishRoot, 'cms', '.strapi'),
+    appDir: cmsSrc,
+    distDir: path.join(cmsSrc, '.strapi'),
   }).load();
   return new Promise((resolve) => {
     app.listen(STRAPI_INTERNAL, '127.0.0.1', () => resolve(app));
