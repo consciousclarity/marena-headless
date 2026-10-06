@@ -12,6 +12,6 @@
     "noEmit": false,
     "outDir": "dist"
   },
-  "include": ["./", "config/**/*", "src/**/*", "node_modules/@strapi/**/*"],
+  "include": ["./", "config/**/*", "src/**/*", "src/**/*.json", "node_modules/@strapi/**/*"],
   "exclude": ["node_modules", ".strapi", ".next-standalone", ".next", "build", "dist"]
 }
