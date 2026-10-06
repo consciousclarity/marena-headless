@@ -86,26 +86,21 @@ async function startNext() {
   });
 }
 
-async function main() {
-  // __dirname is either cms/ (local dev) or cms/.next/ (Hostinger).
-  // The published dir is cms/.next/, so look for:
-  //   cms/.next/.next-standalone/server.js  (next standalone)
-  //   cms/.next/node_modules/.bin/strapi    (strapi)
-  //   cms/.next/node_modules_frontend/      (next standalone's deps)
+function _resolvePublishRoot() {
   const candidates = [
     __dirname,                          // cms/ (local)
     path.join(__dirname, '..'),         // repo root (local) / cms/ (hostinger)
     path.join(__dirname, '..', '..'),   // repo root (hostinger)
   ];
-  let publishRoot = __dirname;          // dir containing .next-standalone/ and node_modules/
   for (const c of candidates) {
-    if (require('fs').existsSync(path.join(c, '.next-standalone', 'server.js'))) {
-      publishRoot = c;
-      break;
-    }
+    if (fs.existsSync(path.join(c, '.next-standalone', 'server.js'))) return c;
   }
-  console.log(`[parent] publishRoot = ${publishRoot}`);
+  return __dirname;
+}
+const publishRoot = _resolvePublishRoot();
+console.log(`[parent] publishRoot = ${publishRoot}`);
 
+async function main() {
   // ponytail: in-process start (sandbox blocks execve of /opt/alt/* binaries).
   console.log(`[parent] starting Strapi on :${STRAPI_INTERNAL}`);
   await startStrapi();
