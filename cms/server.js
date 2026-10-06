@@ -88,14 +88,17 @@ async function startStrapi() {
   process.chdir(cmsSrc);
   process.env.PORT = String(STRAPI_INTERNAL);
   process.env.HOST = '127.0.0.1';
-  const strapiFactory = require(_findDir(path.join('node_modules', '@strapi', 'strapi')));
-  const app = await strapiFactory({
+  const strapiMod = require(_findDir(path.join('node_modules', '@strapi', 'strapi')));
+  // Strapi v5 exports the factory as a named export; v4 exported it directly.
+  const createStrapi = strapiMod.createStrapi || strapiMod.default?.createStrapi || strapiMod;
+  const app = createStrapi({
     appDir: cmsSrc,
     distDir: path.join(cmsSrc, '.strapi'),
-  }).load();
-  return new Promise((resolve) => {
-    app.listen(STRAPI_INTERNAL, '127.0.0.1', () => resolve(app));
   });
+  // start() = load() + listen(); listen() binds to server.host/port from
+  // config/server.ts, which reads the HOST/PORT env vars set above.
+  await app.start();
+  return app;
 }
 
 async function startNext() {
