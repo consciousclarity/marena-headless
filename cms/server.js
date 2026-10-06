@@ -45,36 +45,45 @@ function waitForPort(port, name, timeoutMs = 30000) {
 const children = [];
 
 function spawnChild(name, cmd, args, env, cwd) {
-  // ponytail: Hostinger's runtime PATH may not include node. We try the
-  // configured cmd first, then fall back to a list of well-known node paths.
-  const c = spawn(cmd, args, { stdio: 'inherit', env: { ...process.env, ...env }, cwd });
-  c.on('exit', (code, sig) => {
-    console.error(`[parent] ${name} exited code=${code} sig=${sig}`);
-    process.exit(code ?? 1);
-  });
-  children.push({ name, child: c });
-  return c;
+  // ponytail: Hostinger's runtime sandbox blocks execve() of /opt/alt/* binaries
+  // (ENOENT even when the file exists). We use a no-op stub here; Strapi and
+  // Next.js are loaded IN-PROCESS via startStrapi/startNext below.
+  console.warn(`[parent] spawnChild(${name}) is a no-op; using in-process start`);
+  return { on() {}, kill() {} };
 }
 
-// Resolve the node binary that the Hostinger runtime can actually exec.
-// process.execPath at runtime is /opt/alt/alt-nodejs22/root/usr/bin/node
-// (confirmed by Hostinger logs) — we list it first.
-function resolveNodeBin() {
-  if (process.env.HOSTINGER_NODE_PATH && fs.existsSync(process.env.HOSTINGER_NODE_PATH)) {
-    return process.env.HOSTINGER_NODE_PATH;
-  }
-  const candidates = [
-    process.execPath,                                  // runtime path (varies)
-    '/opt/alt/alt-nodejs22/root/usr/bin/node',         // Hostinger Alt
-    '/opt/alt/alt-nodejs20/root/usr/bin/node',
-    '/usr/bin/node',
-    '/usr/local/bin/node',
-  ];
-  for (const p of candidates) {
-    if (p && fs.existsSync(p)) return p;
-  }
-  // Last resort: defer to spawn's PATH lookup.
-  return 'node';
+// ponytail: Hostinger's runtime sandbox blocks spawn() of any node binary.
+// Load Strapi and Next.js as in-process libraries instead.
+async function startStrapi() {
+  process.chdir(path.join(publishRoot, 'cms'));
+  process.env.PORT = String(STRAPI_INTERNAL);
+  process.env.HOST = '127.0.0.1';
+  // Strapi exports a factory; .load() returns the app, .listen() binds the port.
+  const strapiFactory = require(path.join(publishRoot, 'node_modules', '@strapi', 'strapi'));
+  const app = await strapiFactory({
+    appDir: path.join(publishRoot, 'cms'),
+    distDir: path.join(publishRoot, 'cms', '.strapi'),
+  }).load();
+  return new Promise((resolve) => {
+    app.listen(STRAPI_INTERNAL, '127.0.0.1', () => resolve(app));
+  });
+}
+
+async function startNext() {
+  process.env.PORT = String(NEXTJS_INTERNAL);
+  process.env.HOSTNAME = '127.0.0.1';
+  // Next.js standalone boots on require; we just require it.
+  // The standalone .next-standalone/server.js calls process.nextTick(http.createServer.listen)
+  // which uses HOSTNAME+PORT env vars to bind.
+  process.chdir(path.join(publishRoot, 'frontend'));
+  // Defer the require so the proxy can start first.
+  setImmediate(() => {
+    try {
+      require(path.join(publishRoot, '.next-standalone', 'server.js'));
+    } catch (e) {
+      console.error('[parent] next standalone require failed:', e);
+    }
+  });
 }
 
 async function main() {
@@ -97,29 +106,14 @@ async function main() {
   }
   console.log(`[parent] publishRoot = ${publishRoot}`);
 
-  // ponytail: resolve node binary dynamically — process.execPath points at
-  // the build image, not the runtime image (Hostinger's runtime layout).
-  const nodeBin = resolveNodeBin();
-  console.log(`[parent] nodeBin = ${nodeBin}`);
-  console.log(`[parent] process.execPath = ${process.execPath}`);
-  console.log(`[parent] /opt/alt/alt-nodejs22/root/usr/bin/node exists? ${fs.existsSync('/opt/alt/alt-nodejs22/root/usr/bin/node')}`);
-
-  // Spawn Strapi from its bundled node_modules/.bin/strapi.
-  const strapiBin = path.join(publishRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'strapi.cmd' : 'strapi');
-  const strapiCwd = path.join(publishRoot, 'cms');
-  const strapiEnv = { PORT: String(STRAPI_INTERNAL), HOST: '127.0.0.1' };
-  spawnChild('strapi', nodeBin, [strapiBin], strapiEnv, strapiCwd);
+  // ponytail: in-process start (sandbox blocks execve of /opt/alt/* binaries).
+  console.log(`[parent] starting Strapi on :${STRAPI_INTERNAL}`);
+  await startStrapi();
   await waitForPort(STRAPI_INTERNAL, 'Strapi');
   console.log(`[parent] Strapi ready on :${STRAPI_INTERNAL}`);
 
-  const nextServer = path.join(publishRoot, '.next-standalone', 'server.js');
-  // Next.js standalone needs to find its own deps — set NODE_PATH so it can.
-  const nextEnv = {
-    PORT: String(NEXTJS_INTERNAL),
-    HOSTNAME: '127.0.0.1',
-    NODE_PATH: path.join(publishRoot, 'node_modules_frontend'),
-  };
-  spawnChild('nextjs', nodeBin, [nextServer], nextEnv, path.join(publishRoot, 'frontend'));
+  console.log(`[parent] starting Next.js on :${NEXTJS_INTERNAL}`);
+  await startNext();
   await waitForPort(NEXTJS_INTERNAL, 'Next.js');
   console.log(`[parent] Next.js ready on :${NEXTJS_INTERNAL}`);
 
