@@ -23,6 +23,8 @@
     ".cache/",
     ".tmp/",
     ".strapi/",
+    ".next/",
+    ".next-standalone/",
     "src/admin/",
     "**/*.test.*",
     "src/plugins/**"

@@ -11,7 +11,7 @@
  *   or:  npm run build:unified
  */
 import { spawn } from "node:child_process";
-import { cp, mkdir, rm, stat } from "node:fs/promises";
+import { cp, mkdir, rm, stat, symlink } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -111,11 +111,20 @@ async function main() {
     console.warn(`⚠ no static assets at ${staticSrc} (skipping copy)`);
   }
 
-  // 4. Also copy the standalone server.js into cms/ so cms/server.js can
-  //    reference it relatively.
+  // 4. Copy the standalone server into cms/ so cms/server.js can launch it.
+//    Hostinger's publish step expects a standard Next.js build at cms/.next/
+//    (the one with .next/server/app/, .next/BUILD_ID, etc.) — NOT the
+//    standalone-trimmed version. We do two copies:
+//      cms/.next/             ← full Next.js output (Hostinger's check passes)
+//      cms/.next-standalone/  ← standalone-only (what cms/server.js boots)
+  const fullSrc = resolve(frontendDir, ".next");
   const standaloneSrc = resolve(frontendDir, ".next", "standalone");
+  const fullDst = resolve(cmsDir, ".next");
   const standaloneDst = resolve(cmsDir, ".next-standalone");
-  console.log("▸ copying standalone server...");
+  console.log("▸ copying full Next.js build to cms/.next/...");
+  await rm(fullDst, { recursive: true, force: true });
+  await cp(fullSrc, fullDst, { recursive: true });
+  console.log("▸ copying standalone server to cms/.next-standalone/...");
   await rm(standaloneDst, { recursive: true, force: true });
   await cp(standaloneSrc, standaloneDst, { recursive: true });
 
