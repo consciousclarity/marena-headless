@@ -112,20 +112,21 @@ async function main() {
   }
 
   // 4. Copy the standalone server into cms/ so cms/server.js can launch it.
-//    Also create cms/.next/ as a REAL folder (not a symlink/junction) —
-//    Hostinger's publish step uses a non-following file walker, so symlinks
-//    and NTFS junctions are silently ignored. We move the standalone output
-//    into cms/.next/ directly.
+//    Hostinger's publish step expects a standard Next.js build at cms/.next/
+//    (the one with .next/server/app/, .next/BUILD_ID, etc.) — NOT the
+//    standalone-trimmed version. We do two copies:
+//      cms/.next/             ← full Next.js output (Hostinger's check passes)
+//      cms/.next-standalone/  ← standalone-only (what cms/server.js boots)
+  const fullSrc = resolve(frontendDir, ".next");
   const standaloneSrc = resolve(frontendDir, ".next", "standalone");
-  const standaloneDst = resolve(cmsDir, ".next");
-  const cacheDst = resolve(cmsDir, ".next-standalone");
-  console.log("▸ copying standalone server to cms/.next/...");
+  const fullDst = resolve(cmsDir, ".next");
+  const standaloneDst = resolve(cmsDir, ".next-standalone");
+  console.log("▸ copying full Next.js build to cms/.next/...");
+  await rm(fullDst, { recursive: true, force: true });
+  await cp(fullSrc, fullDst, { recursive: true });
+  console.log("▸ copying standalone server to cms/.next-standalone/...");
   await rm(standaloneDst, { recursive: true, force: true });
   await cp(standaloneSrc, standaloneDst, { recursive: true });
-  // Keep the .next-standalone mirror so cms/server.js can boot it without
-  // caring which path the publish step expects.
-  await rm(cacheDst, { recursive: true, force: true });
-  await cp(standaloneSrc, cacheDst, { recursive: true });
 
   console.log("✓ unified build complete");
   console.log(`  cms/server.js -> ${standaloneDst}/server.js`);
