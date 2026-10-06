@@ -112,22 +112,20 @@ async function main() {
   }
 
   // 4. Copy the standalone server into cms/ so cms/server.js can launch it.
-  //    Also create a `cms/.next` symlink to the standalone dir so Hostinger's
-  //    Next.js preset (output dir = .next) finds something to publish.
+//    Also create cms/.next/ as a REAL folder (not a symlink/junction) —
+//    Hostinger's publish step uses a non-following file walker, so symlinks
+//    and NTFS junctions are silently ignored. We move the standalone output
+//    into cms/.next/ directly.
   const standaloneSrc = resolve(frontendDir, ".next", "standalone");
-  const standaloneDst = resolve(cmsDir, ".next-standalone");
-  const nextLink = resolve(cmsDir, ".next");
-  console.log("▸ copying standalone server...");
+  const standaloneDst = resolve(cmsDir, ".next");
+  const cacheDst = resolve(cmsDir, ".next-standalone");
+  console.log("▸ copying standalone server to cms/.next/...");
   await rm(standaloneDst, { recursive: true, force: true });
   await cp(standaloneSrc, standaloneDst, { recursive: true });
-  // Hostinger publishes cms/.next (Next.js preset requires it). On POSIX use
-  // a symlink; on Windows fall back to a real directory junction via mklink.
-  await rm(nextLink, { recursive: true, force: true });
-  if (isWindows()) {
-    await run("cmd", ["/c", "mklink", "/J", "cms\\.next", ".next-standalone"], { cwd: repoRoot });
-  } else {
-    await symlink(standaloneDst, nextLink, "dir");
-  }
+  // Keep the .next-standalone mirror so cms/server.js can boot it without
+  // caring which path the publish step expects.
+  await rm(cacheDst, { recursive: true, force: true });
+  await cp(standaloneSrc, cacheDst, { recursive: true });
 
   console.log("✓ unified build complete");
   console.log(`  cms/server.js -> ${standaloneDst}/server.js`);

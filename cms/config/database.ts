@@ -1,6 +1,6 @@
 import type { Core } from '@strapi/strapi';
 
-export default ({ env }: { env: (k: string, d?: any) => any }) => ({
+export default ({ env }: { env: any }) => ({
   connection: {
     client: 'mysql2',
     connection: {
