@@ -1,7 +1,8 @@
-import path from 'node:path';
-import { env } from '@strapi/utils';
+import { env as envHelper } from '@strapi/utils';
 
-export default ({ env: e }: { env: (k: string, d?: any) => any }) => ({
+type Env = typeof envHelper;
+
+export default ({ env: e }: { env: Env }) => ({
   host: e('HOST', '0.0.0.0'),
   port: e.int('PORT', 1337),
   app: {

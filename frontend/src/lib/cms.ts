@@ -118,10 +118,10 @@ const flatten = (entity: any) => {
 // Public API ---------------------------------------------------------------
 
 export const getHomepage = (opts?: { draft?: boolean }) =>
-  strapiFetch<any>('/homepage?populate=deep', { tags: ['homepage'], draft: opts?.draft }, 60).then(flatten) as Promise<Homepage>;
+  strapiFetch<any>('/homepage?populate=*', { tags: ['homepage'], draft: opts?.draft }, 60).then(flatten) as Promise<Homepage>;
 
 export const getAllVillas = (opts?: { draft?: boolean }) =>
-  strapiFetch<any[]>('/villas?populate=deep&sort=order:asc', { tags: ['villas'], draft: opts?.draft }, 60).then((rows) =>
+  strapiFetch<any[]>('/villas?populate=*&sort=order:asc', { tags: ['villas'], draft: opts?.draft }, 60).then((rows) =>
     rows.map(flatten)
   ) as Promise<Villa[]>;
 
@@ -129,7 +129,7 @@ export const getVillaBySlug = async (slug: string, opts?: { draft?: boolean }) =
   const tag = `villa:${slug}`;
   try {
     const rows = await strapiFetch<any[]>(
-      `/villas?filters[slug][$eq]=${encodeURIComponent(slug)}&populate=deep`,
+      `/villas?filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`,
       { tags: ['villas', tag], draft: opts?.draft },
       60
     );
@@ -141,7 +141,7 @@ export const getVillaBySlug = async (slug: string, opts?: { draft?: boolean }) =
 };
 
 export const getAllExperiences = (opts?: { draft?: boolean }) =>
-  strapiFetch<any[]>('/experiences?populate=deep&sort=order:asc', { tags: ['experiences'], draft: opts?.draft }, 60).then((rows) =>
+  strapiFetch<any[]>('/experiences?populate=*&sort=order:asc', { tags: ['experiences'], draft: opts?.draft }, 60).then((rows) =>
     rows.map(flatten)
   ) as Promise<Experience[]>;
 
