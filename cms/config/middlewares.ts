@@ -18,7 +18,6 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      enabled: true,
       origin: [
         'https://alp-see.at',
         'https://www.alp-see.at',
