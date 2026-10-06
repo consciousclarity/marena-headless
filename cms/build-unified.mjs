@@ -30,10 +30,16 @@ function run(cmd, args, opts = {}) {
   return new Promise((resolve, reject) => {
     // On Windows, .cmd files need shell:true to spawn correctly.
     // On POSIX, the binary is invoked directly.
+    // Merge env so NODE_ENV overrides don't clobber PATH (which the
+    // build-unified.mjs caller needs for `npm` to be findable on Windows).
+    const env = opts.env
+      ? { ...process.env, ...opts.env }
+      : process.env;
     const c = spawn(cmd, args, {
       stdio: "inherit",
       shell: isWindows(),
       ...opts,
+      env,
     });
     c.on("exit", (code) =>
       code === 0 ? resolve() : reject(new Error(`${cmd} ${args.join(" ")} exited ${code}`))
