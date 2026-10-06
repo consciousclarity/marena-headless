@@ -52,6 +52,20 @@ function spawnChild(name, cmd, args, env, cwd) {
   return { on() {}, kill() {} };
 }
 
+function _resolvePublishRoot() {
+  const candidates = [
+    __dirname,                          // cms/ (local)
+    path.join(__dirname, '..'),         // repo root (local) / cms/ (hostinger)
+    path.join(__dirname, '..', '..'),   // repo root (hostinger)
+  ];
+  for (const c of candidates) {
+    if (fs.existsSync(path.join(c, '.next-standalone', 'server.js'))) return c;
+  }
+  return __dirname;
+}
+const publishRoot = _resolvePublishRoot();
+console.log(`[parent] publishRoot = ${publishRoot}`);
+
 // ponytail: Hostinger's runtime sandbox blocks spawn() of any node binary.
 // Load Strapi and Next.js as in-process libraries instead.
 // The published tree has the cms source at <publishRoot>/_cms_src/ (not
@@ -89,20 +103,6 @@ async function startNext() {
     }
   });
 }
-
-function _resolvePublishRoot() {
-  const candidates = [
-    __dirname,                          // cms/ (local)
-    path.join(__dirname, '..'),         // repo root (local) / cms/ (hostinger)
-    path.join(__dirname, '..', '..'),   // repo root (hostinger)
-  ];
-  for (const c of candidates) {
-    if (fs.existsSync(path.join(c, '.next-standalone', 'server.js'))) return c;
-  }
-  return __dirname;
-}
-const publishRoot = _resolvePublishRoot();
-console.log(`[parent] publishRoot = ${publishRoot}`);
 
 async function main() {
   // ponytail: in-process start (sandbox blocks execve of /opt/alt/* binaries).
