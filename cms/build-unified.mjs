@@ -127,8 +127,42 @@ async function main() {
     console.log("▸ copying standalone server to cms/.next-standalone/...");
     await rm(standaloneDst, { recursive: true, force: true });
     await cp(standaloneSrc, standaloneDst, { recursive: true });
+    // 4. Strapi and Next.js standalone are launched by the unified server at
+    //    cms/server.js (or cms/.next/marena-server.js when published). The
+    //    cms/.next/ tree is published, so put our entry inside it under a
+    //    fixed name Hostinger can find.
+    const fullSrc = resolve(frontendDir, ".next");
+    const standaloneSrc = resolve(frontendDir, ".next", "standalone");
+    const fullDst = resolve(cmsDir, ".next");
+    const standaloneDst = resolve(cmsDir, ".next-standalone");
+    const entrySrc = resolve(cmsDir, "server.js");
+    const entryDst = resolve(cmsDir, ".next", "marena-server.js");
+    console.log("▸ copying full Next.js build to cms/.next/...");
+    await rm(fullDst, { recursive: true, force: true });
+    await cp(fullSrc, fullDst, { recursive: true });
+    console.log("▸ copying standalone server to cms/.next-standalone/...");
+    await rm(standaloneDst, { recursive: true, force: true });
+    await cp(standaloneSrc, standaloneDst, { recursive: true });
     console.log("▸ copying unified entry to cms/.next/marena-server.js...");
     await cp(entrySrc, entryDst);
+
+    // 5. Copy the runtime dependencies into the publish dir so the unified
+    //    entry can spawn Strapi + Next.js without npx (Hostinger's publish
+    //    step only ships the build output, not node_modules/).
+    //    The published cms/.next/ → public_html/ has no node_modules unless
+    //    we put it there. We bundle a trimmed node_modules/ alongside.
+    const cmsNm = resolve(cmsDir, "node_modules");
+    const publishNm = resolve(cmsDir, ".next", "node_modules");
+    if (await exists(cmsNm)) {
+      console.log("▸ copying CMS node_modules into cms/.next/ for publish...");
+      await cp(cmsNm, publishNm, { recursive: true, dereference: false });
+    }
+    const feNm = resolve(frontendDir, "node_modules");
+    const publishFeNm = resolve(cmsDir, ".next", "node_modules_frontend");
+    if (await exists(feNm)) {
+      console.log("▸ copying frontend node_modules into cms/.next/ for publish...");
+      await cp(feNm, publishFeNm, { recursive: true, dereference: false });
+    }
 
   console.log("✓ unified build complete");
   console.log(`  cms/server.js -> ${standaloneDst}/server.js`);

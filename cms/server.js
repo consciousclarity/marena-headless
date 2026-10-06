@@ -55,33 +55,41 @@ function spawnChild(name, cmd, args, env, cwd) {
 
 async function main() {
   // __dirname is either cms/ (local dev) or cms/.next/ (Hostinger).
-  // Walk up until we find a directory that contains cms/ or .next-standalone/.
-  // For the published build, the file is at cms/.next/marena-server.js, so
-  // we look one level up for the .next-standalone/ sibling.
+  // The published dir is cms/.next/, so look for:
+  //   cms/.next/.next-standalone/server.js  (next standalone)
+  //   cms/.next/node_modules/.bin/strapi    (strapi)
+  //   cms/.next/node_modules_frontend/      (next standalone's deps)
   const candidates = [
-    __dirname,                        // cms/ (local)
-    path.join(__dirname, '..'),       // repo root (local) / cms/ (hostinger)
-    path.join(__dirname, '..', '..'),  // repo root (hostinger)
+    __dirname,                          // cms/ (local)
+    path.join(__dirname, '..'),         // repo root (local) / cms/ (hostinger)
+    path.join(__dirname, '..', '..'),   // repo root (hostinger)
   ];
-  let repoRoot = __dirname;
+  let publishRoot = __dirname;          // dir containing .next-standalone/ and node_modules/
   for (const c of candidates) {
     if (require('fs').existsSync(path.join(c, '.next-standalone', 'server.js'))) {
-      repoRoot = c;
+      publishRoot = c;
       break;
     }
   }
-  console.log(`[parent] repoRoot = ${repoRoot}`);
+  console.log(`[parent] publishRoot = ${publishRoot}`);
 
+  // Spawn Strapi from its bundled node_modules/.bin/strapi (works at runtime
+  // because build-unified.mjs copies cms/node_modules → publishRoot/node_modules).
+  const strapiBin = path.join(publishRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'strapi.cmd' : 'strapi');
+  const strapiCwd = path.join(publishRoot, 'cms');
   const strapiEnv = { PORT: String(STRAPI_INTERNAL), HOST: '127.0.0.1' };
-  // Strapi is launched from its own directory so .strapi/ and config/ resolve.
-  const strapiCwd = path.join(repoRoot, 'cms');
-  spawnChild('strapi', 'npx', ['strapi', 'start'], { ...strapiEnv, cwd: strapiCwd }, strapiCwd);
+  spawnChild('strapi', 'node', [strapiBin], strapiEnv, strapiCwd);
   await waitForPort(STRAPI_INTERNAL, 'Strapi');
   console.log(`[parent] Strapi ready on :${STRAPI_INTERNAL}`);
 
-  const nextServer = path.join(repoRoot, '.next-standalone', 'server.js');
-  const nextEnv = { PORT: String(NEXTJS_INTERNAL), HOSTNAME: '127.0.0.1' };
-  spawnChild('nextjs', 'node', [nextServer], nextEnv, path.join(repoRoot, 'frontend'));
+  const nextServer = path.join(publishRoot, '.next-standalone', 'server.js');
+  // Next.js standalone needs to find its own deps — set NODE_PATH so it can.
+  const nextEnv = {
+    PORT: String(NEXTJS_INTERNAL),
+    HOSTNAME: '127.0.0.1',
+    NODE_PATH: path.join(publishRoot, 'node_modules_frontend'),
+  };
+  spawnChild('nextjs', 'node', [nextServer], nextEnv, path.join(publishRoot, 'frontend'));
   await waitForPort(NEXTJS_INTERNAL, 'Next.js');
   console.log(`[parent] Next.js ready on :${NEXTJS_INTERNAL}`);
 
