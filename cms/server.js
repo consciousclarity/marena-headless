@@ -125,6 +125,11 @@ async function startStrapi() {
   const app = createStrapi({ appDir: cmsSrc, distDir });
   // Hostinger's runtime log API only keeps JSON console lines, so Strapi's own
   // plain-text logger output is invisible. Log each stage through console.
+  // The upload provider refuses to start if <public>/uploads is missing, and the
+  // empty uploads/ dir is not part of the published build (nor of git).
+  const publicDir = path.resolve(cmsSrc, process.env.PUBLIC_DIR || './public');
+  fs.mkdirSync(path.join(publicDir, 'uploads'), { recursive: true });
+  console.log(`[parent] Strapi public dir: ${publicDir}`);
   const t0 = Date.now();
   const beat = setInterval(() => console.log(`[parent] still starting Strapi (${Math.round((Date.now() - t0) / 1000)}s)`), 15000);
   try {
