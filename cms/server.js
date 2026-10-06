@@ -73,12 +73,14 @@ async function main() {
   }
   console.log(`[parent] publishRoot = ${publishRoot}`);
 
-  // Spawn Strapi from its bundled node_modules/.bin/strapi (works at runtime
-  // because build-unified.mjs copies cms/node_modules → publishRoot/node_modules).
+  // Spawn Strapi from its bundled node_modules/.bin/strapi. We use
+  // process.execPath (the absolute path of the currently-running node binary)
+  // because Hostinger's runtime does not have `node` or `npx` on PATH for
+  // child_process.spawn lookups.
   const strapiBin = path.join(publishRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'strapi.cmd' : 'strapi');
   const strapiCwd = path.join(publishRoot, 'cms');
   const strapiEnv = { PORT: String(STRAPI_INTERNAL), HOST: '127.0.0.1' };
-  spawnChild('strapi', 'node', [strapiBin], strapiEnv, strapiCwd);
+  spawnChild('strapi', process.execPath, [strapiBin], strapiEnv, strapiCwd);
   await waitForPort(STRAPI_INTERNAL, 'Strapi');
   console.log(`[parent] Strapi ready on :${STRAPI_INTERNAL}`);
 
@@ -89,7 +91,7 @@ async function main() {
     HOSTNAME: '127.0.0.1',
     NODE_PATH: path.join(publishRoot, 'node_modules_frontend'),
   };
-  spawnChild('nextjs', 'node', [nextServer], nextEnv, path.join(publishRoot, 'frontend'));
+  spawnChild('nextjs', process.execPath, [nextServer], nextEnv, path.join(publishRoot, 'frontend'));
   await waitForPort(NEXTJS_INTERNAL, 'Next.js');
   console.log(`[parent] Next.js ready on :${NEXTJS_INTERNAL}`);
 
