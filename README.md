@@ -2,14 +2,14 @@
 
 Decoupled Strapi v5 + Next.js 14 build for the Marena Bali hotel/villa
 site. Replaces the legacy WordPress + Divi 4.27.5 install at
-`staging.marenabali.com`. Lives at `marena.alp-see.com` (Hostinger,
+`staging.marenabali.com`. Lives at `alp-see.at` (Hostinger,
 Business+ plan, Node 22 LTS).
 
 ## Layout
 
 ```
-cms/        Strapi v5 admin + REST API (cms.marena.alp-see.com)
-frontend/   Next.js 14 App Router (marena.alp-see.com)
+cms/        Strapi v5 admin + REST API (alp-see.at)
+frontend/   Next.js 14 App Router (alp-see.at)
 MIGRATION.md  The 5-step runbook
 ```
 

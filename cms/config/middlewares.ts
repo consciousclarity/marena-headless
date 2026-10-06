@@ -20,8 +20,8 @@ export default [
     config: {
       enabled: true,
       origin: [
-        'https://marena.alp-see.com',
-        'https://www.marena.alp-see.com',
+        'https://alp-see.at',
+        'https://www.alp-see.at',
         process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '',
       ].filter(Boolean),
       headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
