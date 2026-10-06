@@ -11,6 +11,9 @@ build/
 .cache/
 .strapi/
 public/uploads/
+cms/public/uploads/
+*.tsbuildinfo
+cms/.strapi-updater.json
 .turbo/
 # media-manifest.json is committed as the first-run snapshot.
 # Re-run scripts/classify_media.py to regenerate locally; do not commit new timestamps.

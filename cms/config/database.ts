@@ -1,8 +1,10 @@
-import type { Core } from '@strapi/strapi';
+import { env as envHelper } from '@strapi/utils';
 
-export default ({ env }: { env: any }) => ({
+type Env = typeof envHelper;
+
+export default ({ env }: { env: Env }) => ({
   connection: {
-    client: 'mysql2',
+    client: 'mysql',
     connection: {
       host: env('DATABASE_HOST', '127.0.0.1'),
       port: env.int('DATABASE_PORT', 3306),

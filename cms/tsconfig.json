@@ -1,17 +1,32 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "lib": ["ES2020"],
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "target": "ES2019",
+    "strict": true,
     "skipLibCheck": true,
-    "strict": false,
-    "noEmit": true,
-    "outDir": "dist"
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noEmitOnError": true,
+    "noImplicitThis": true,
+    "outDir": "dist",
+    "rootDir": "."
   },
-  "include": ["./", "config/**/*", "src/**/*", "node_modules/@strapi/**/*"],
-  "exclude": ["node_modules", ".strapi", ".next-standalone", ".next", "build", "dist"]
+  "include": ["./", "./**/*.ts", "./**/*.js", "src/**/*.json"],
+  "exclude": [
+    "node_modules/",
+    "build/",
+    "dist/",
+    ".cache/",
+    ".tmp/",
+    ".strapi/",
+    ".next/",
+    ".next-standalone/",
+    "src/admin/",
+    "**/*.test.*",
+    "src/plugins/**"
+  ]
 }
