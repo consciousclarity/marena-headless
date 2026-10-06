@@ -44,6 +44,8 @@ function waitForPort(port, name, timeoutMs = 30000) {
 const children = [];
 
 function spawnChild(name, cmd, args, env, cwd) {
+  // ponytail: Hostinger's runtime PATH may not include node. We try the
+  // configured cmd first, then fall back to a list of well-known node paths.
   const c = spawn(cmd, args, { stdio: 'inherit', env: { ...process.env, ...env }, cwd });
   c.on('exit', (code, sig) => {
     console.error(`[parent] ${name} exited code=${code} sig=${sig}`);
@@ -51,6 +53,24 @@ function spawnChild(name, cmd, args, env, cwd) {
   });
   children.push({ name, child: c });
   return c;
+}
+
+// Resolve the node binary that the Hostinger runtime can actually exec.
+// process.execPath lies — it points to the build-image path, not the runtime.
+function resolveNodeBin() {
+  if (process.env.HOSTINGER_NODE_PATH && fs.existsSync(process.env.HOSTINGER_NODE_PATH)) {
+    return process.env.HOSTINGER_NODE_PATH;
+  }
+  const candidates = [
+    '/usr/bin/node',
+    '/usr/local/bin/node',
+    process.execPath, // works on local dev and most CI
+  ];
+  for (const p of candidates) {
+    try { if (fs.existsSync(p)) return p; } catch {}
+  }
+  // Last resort: defer to spawn's PATH lookup.
+  return 'node';
 }
 
 async function main() {
@@ -73,14 +93,18 @@ async function main() {
   }
   console.log(`[parent] publishRoot = ${publishRoot}`);
 
-  // Spawn Strapi from its bundled node_modules/.bin/strapi. We use
-  // process.execPath (the absolute path of the currently-running node binary)
-  // because Hostinger's runtime does not have `node` or `npx` on PATH for
-  // child_process.spawn lookups.
+  // ponytail: resolve node binary dynamically — process.execPath points at
+  // the build image, not the runtime image (Hostinger's runtime layout).
+  const nodeBin = resolveNodeBin();
+  console.log(`[parent] nodeBin = ${nodeBin}`);
+  console.log(`[parent] process.execPath = ${process.execPath}`);
+  console.log(`[parent] /opt/alt/alt-nodejs22/root/usr/bin/node exists? ${fs.existsSync('/opt/alt/alt-nodejs22/root/usr/bin/node')}`);
+
+  // Spawn Strapi from its bundled node_modules/.bin/strapi.
   const strapiBin = path.join(publishRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'strapi.cmd' : 'strapi');
   const strapiCwd = path.join(publishRoot, 'cms');
   const strapiEnv = { PORT: String(STRAPI_INTERNAL), HOST: '127.0.0.1' };
-  spawnChild('strapi', process.execPath, [strapiBin], strapiEnv, strapiCwd);
+  spawnChild('strapi', nodeBin, [strapiBin], strapiEnv, strapiCwd);
   await waitForPort(STRAPI_INTERNAL, 'Strapi');
   console.log(`[parent] Strapi ready on :${STRAPI_INTERNAL}`);
 
@@ -91,7 +115,7 @@ async function main() {
     HOSTNAME: '127.0.0.1',
     NODE_PATH: path.join(publishRoot, 'node_modules_frontend'),
   };
-  spawnChild('nextjs', process.execPath, [nextServer], nextEnv, path.join(publishRoot, 'frontend'));
+  spawnChild('nextjs', nodeBin, [nextServer], nextEnv, path.join(publishRoot, 'frontend'));
   await waitForPort(NEXTJS_INTERNAL, 'Next.js');
   console.log(`[parent] Next.js ready on :${NEXTJS_INTERNAL}`);
 
