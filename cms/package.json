@@ -12,8 +12,8 @@
     "build:unified": "node build-unified.mjs"
   },
   "dependencies": {
-    "@strapi/strapi": "5.4.2",
-    "@strapi/plugin-users-permissions": "5.4.2",
+    "@strapi/strapi": "5.37.0",
+    "@strapi/plugin-users-permissions": "5.45.0",
     "@strapi/plugin-i18n": "5.4.2",
     "better-sqlite3": "11.3.0",
     "react": "^18.3.1",
