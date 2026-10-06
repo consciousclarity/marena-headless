@@ -1,6 +1,6 @@
 """
 Deploy the Marena headless build (Strapi CMS + Next.js frontend) to
-marena.alp-see.com via the Hostinger REST API.
+alp-see.at via the Hostinger REST API.
 
 Flow per app:
   1. Generate TUS upload URL via /api/hosting/v1/files/upload-urls
@@ -19,8 +19,8 @@ import urllib.parse
 import urllib.request
 
 TOKEN = os.environ["HOSTINGER_API_TOKEN"]
-USERNAME = "u506698511"  # alp-see.com / marena.alp-see.com account
-DOMAIN = "marena.alp-see.com"
+USERNAME = "u506698511"  # alp-see.com / alp-see.at account
+DOMAIN = "alp-see.at"
 BASE = "https://developers.hostinger.com/api/hosting/v1"
 
 
@@ -122,34 +122,44 @@ def get_build_logs(uuid: str) -> str:
     return data.get("logs", "") if isinstance(data, dict) else str(data)
 
 
+def _req(name: str) -> str:
+    """Read a required secret from the environment; never hardcode secrets here."""
+    v = os.environ.get(name)
+    if not v:
+        raise SystemExit(f"missing required env var {name}")
+    return v
+
+
 def cms_env_for():
     return [
         {"key": "HOST", "value": "0.0.0.0"},
         {"key": "PORT", "value": "1337"},
-        {"key": "APP_KEYS", "value": "k1,k2,k3,k4"},
-        {"key": "API_TOKEN_SALT", "value": "salt-api-marena-2026"},
-        {"key": "ADMIN_JWT_SECRET", "value": "jwt-marena-2026"},
-        {"key": "TRANSFER_TOKEN_SALT", "value": "transfer-marena-2026"},
-        {"key": "ENCRYPTION_KEY", "value": "enc-marena-2026"},
-        {"key": "PUBLIC_URL", "value": "https://app.marena.alp-see.com"},
+        {"key": "APP_KEYS", "value": _req("STRAPI_APP_KEYS")},  # 4 comma-separated random keys
+        {"key": "API_TOKEN_SALT", "value": _req("STRAPI_API_TOKEN_SALT")},
+        {"key": "ADMIN_JWT_SECRET", "value": _req("STRAPI_ADMIN_JWT_SECRET")},
+        {"key": "TRANSFER_TOKEN_SALT", "value": _req("STRAPI_TRANSFER_TOKEN_SALT")},
+        {"key": "ENCRYPTION_KEY", "value": _req("STRAPI_ENCRYPTION_KEY")},
+        {"key": "PUBLIC_URL", "value": f"https://{DOMAIN}"},
         {"key": "DATABASE_CLIENT", "value": "mysql"},
         {"key": "DATABASE_HOST", "value": "127.0.0.1"},
         {"key": "DATABASE_PORT", "value": "3306"},
-        {"key": "DATABASE_NAME", "value": os.environ["MARENABALI_STRAPI_DB_NAME"]},
-        {"key": "DATABASE_USERNAME", "value": os.environ["MARENABALI_STRAPI_DB_USER"]},
-        {"key": "DATABASE_PASSWORD", "value": os.environ["MARENABALI_STRAPI_DB_PASSWORD"]},
+        {"key": "DATABASE_NAME", "value": _req("MARENABALI_STRAPI_DB_NAME")},
+        {"key": "DATABASE_USERNAME", "value": _req("MARENABALI_STRAPI_DB_USER")},
+        {"key": "DATABASE_PASSWORD", "value": _req("MARENABALI_STRAPI_DB_PASSWORD")},
         {"key": "DATABASE_SSL", "value": "false"},
-        {"key": "REVALIDATE_SECRET", "value": os.environ.get("REVALIDATE_SECRET", "mr-9d2e-f8a1-marena-bali-2026")},
-        {"key": "FRONTEND_REVALIDATE_URL", "value": "https://marena.alp-see.com/api/revalidate"},
+        {"key": "REVALIDATE_SECRET", "value": _req("REVALIDATE_SECRET")},
+        {"key": "FRONTEND_REVALIDATE_URL", "value": f"https://{DOMAIN}/api/revalidate"},
         {"key": "NODE_ENV", "value": "production"},
+        {"key": "STRAPI_URL", "value": f"https://{DOMAIN}"},
+        {"key": "STRAPI_API_TOKEN", "value": os.environ.get("STRAPI_API_TOKEN", "")},
     ]
 
 
 def fe_env_for():
     return [
-        {"key": "STRAPI_URL", "value": "https://app.marena.alp-see.com"},
-        {"key": "STRAPI_API_TOKEN", "value": "REPLACE_AFTER_CMS_FIRST_LOGIN"},
-        {"key": "REVALIDATE_SECRET", "value": os.environ.get("REVALIDATE_SECRET", "mr-9d2e-f8a1-marena-bali-2026")},
+        {"key": "STRAPI_URL", "value": f"https://{DOMAIN}"},
+        {"key": "STRAPI_API_TOKEN", "value": os.environ.get("STRAPI_API_TOKEN", "")},
+        {"key": "REVALIDATE_SECRET", "value": _req("REVALIDATE_SECRET")},
         {"key": "NODE_ENV", "value": "production"},
     ]
 
@@ -208,8 +218,8 @@ def main():
         deploy_app("frontend", fe_zip, None, "build", fe_env_for(), entry_file=None, archive_subdir=".")
 
     print("\nAll done. Verify:")
-    print(f"  https://marena.alp-see.com/")
-    print(f"  https://app.marena.alp-see.com/admin")
+    print(f"  https://alp-see.at/")
+    print(f"  https://alp-see.at/admin")
 
 
 if __name__ == "__main__":

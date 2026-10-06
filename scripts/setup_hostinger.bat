@@ -22,7 +22,7 @@ if "%HOSTINGER_API_TOKEN%"=="" (
 echo [1/2] Saving token to .env.local ...
 (
   echo HOSTINGER_API_TOKEN=%HOSTINGER_API_TOKEN%
-  echo MARENABALI_TARGET_DOMAIN=marena.alp-see.com
+  echo MARENABALI_TARGET_DOMAIN=alp-see.at
   echo STRAPI_DB_NAME=marena_cms
   echo STRAPI_DB_USER=marena_cms
 ) > .env.local

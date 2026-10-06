@@ -27,7 +27,7 @@ export default async function HomePage() {
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const safeHeroImage: any = safeHome.heroImage ?? {
-    url: 'https://app.marena.alp-see.com/uploads/hero_placeholder_8e2d1c.jpg',
+    url: 'https://alp-see.at/uploads/hero_placeholder_8e2d1c.jpg',
     alternativeText: 'Bali villa at sunset',
     width: 2400,
     height: 1480,

@@ -5,7 +5,7 @@
  */
 import type { Core } from '@strapi/strapi';
 
-const WEBHOOK_URL = process.env.FRONTEND_REVALIDATE_URL || 'https://marena.alp-see.com/api/revalidate';
+const WEBHOOK_URL = process.env.FRONTEND_REVALIDATE_URL || 'https://alp-see.at/api/revalidate';
 const WEBHOOK_SECRET = process.env.REVALIDATE_SECRET || '';
 
 export default {

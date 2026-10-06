@@ -1,5 +1,5 @@
 /**
- * Unified entry point for marena.alp-see.com.
+ * Unified entry point for alp-see.at.
  *
  * Boots two child processes:
  *   - Strapi on PORT+1 -> /admin, /api/*, /uploads/*
@@ -52,6 +52,20 @@ function spawnChild(name, cmd, args, env, cwd) {
   return { on() {}, kill() {} };
 }
 
+function _resolvePublishRoot() {
+  const candidates = [
+    __dirname,                          // cms/ (local)
+    path.join(__dirname, '..'),         // repo root (local) / cms/ (hostinger)
+    path.join(__dirname, '..', '..'),   // repo root (hostinger)
+  ];
+  for (const c of candidates) {
+    if (fs.existsSync(path.join(c, '.next-standalone', 'server.js'))) return c;
+  }
+  return __dirname;
+}
+const publishRoot = _resolvePublishRoot();
+console.log(`[parent] publishRoot = ${publishRoot}`);
+
 // ponytail: Hostinger's runtime sandbox blocks spawn() of any node binary.
 // Load Strapi and Next.js as in-process libraries instead.
 // The published tree has the cms source at <publishRoot>/_cms_src/ (not
@@ -90,20 +104,6 @@ async function startNext() {
   });
 }
 
-function _resolvePublishRoot() {
-  const candidates = [
-    __dirname,                          // cms/ (local)
-    path.join(__dirname, '..'),         // repo root (local) / cms/ (hostinger)
-    path.join(__dirname, '..', '..'),   // repo root (hostinger)
-  ];
-  for (const c of candidates) {
-    if (fs.existsSync(path.join(c, '.next-standalone', 'server.js'))) return c;
-  }
-  return __dirname;
-}
-const publishRoot = _resolvePublishRoot();
-console.log(`[parent] publishRoot = ${publishRoot}`);
-
 async function main() {
   // ponytail: in-process start (sandbox blocks execve of /opt/alt/* binaries).
   console.log(`[parent] starting Strapi on :${STRAPI_INTERNAL}`);
@@ -131,7 +131,7 @@ async function main() {
     // Tell upstreams they're behind a proxy so they trust X-Forwarded-Proto.
     proxyHeaders['x-forwarded-host'] = process.env.PUBLIC_URL
       ? new URL(process.env.PUBLIC_URL).host
-      : 'marena.alp-see.com';
+      : 'alp-see.at';
     proxyHeaders['x-forwarded-proto'] = 'https';
     const proxyReq = http.request(
       {
