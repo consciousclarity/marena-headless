@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "outDir": "dist"
+  },
+  "include": ["./", "config/**/*", "src/**/*", "node_modules/@strapi/**/*"],
+  "exclude": ["node_modules", ".strapi", ".next-standalone", ".next", "build", "dist"]
+}

@@ -11,7 +11,7 @@
  *   or:  npm run build:unified
  */
 import { spawn } from "node:child_process";
-import { cp, mkdir, rm, stat } from "node:fs/promises";
+import { cp, mkdir, rm, stat, symlink } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -111,13 +111,23 @@ async function main() {
     console.warn(`⚠ no static assets at ${staticSrc} (skipping copy)`);
   }
 
-  // 4. Also copy the standalone server.js into cms/ so cms/server.js can
-  //    reference it relatively.
+  // 4. Copy the standalone server into cms/ so cms/server.js can launch it.
+  //    Also create a `cms/.next` symlink to the standalone dir so Hostinger's
+  //    Next.js preset (output dir = .next) finds something to publish.
   const standaloneSrc = resolve(frontendDir, ".next", "standalone");
   const standaloneDst = resolve(cmsDir, ".next-standalone");
+  const nextLink = resolve(cmsDir, ".next");
   console.log("▸ copying standalone server...");
   await rm(standaloneDst, { recursive: true, force: true });
   await cp(standaloneSrc, standaloneDst, { recursive: true });
+  // Hostinger publishes cms/.next (Next.js preset requires it). On POSIX use
+  // a symlink; on Windows fall back to a real directory junction via mklink.
+  await rm(nextLink, { recursive: true, force: true });
+  if (isWindows()) {
+    await run("cmd", ["/c", "mklink", "/J", "cms\\.next", ".next-standalone"], { cwd: repoRoot });
+  } else {
+    await symlink(standaloneDst, nextLink, "dir");
+  }
 
   console.log("✓ unified build complete");
   console.log(`  cms/server.js -> ${standaloneDst}/server.js`);
