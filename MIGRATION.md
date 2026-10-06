@@ -1,7 +1,7 @@
 # Marena Bali — Headless Migration Runbook
 
 From: `staging.marenabali.com` (WordPress + Divi 4.27.5, 18 pages, 100 media)
-To: `marena.alp-see.com` (Next.js 14 + Strapi v5, both on Hostinger)
+To: `alp-see.at` (Next.js 14 + Strapi v5, both on Hostinger)
 
 **Direction (per Alejandro):** build from scratch, no Divi carryover. The
 8 "Marena Experience" sub-pages fold into one `/experiences` page with
@@ -11,7 +11,7 @@ anchor sections.
 
 ## 1. Provision the Strapi CMS (Hostinger, ~30 min)
 
-1. hPanel → **Websites** → `marena.alp-see.com` → **Node.js** → **Create app**.
+1. hPanel → **Websites** → `alp-see.at` → **Node.js** → **Create app**.
    - Framework: **Strapi** (preset is detected once `package.json` is read).
    - Node version: **22 LTS**.
    - Source: import this `cms/` folder from a GitHub repo (or upload the zip).
@@ -19,7 +19,7 @@ anchor sections.
    user `marena_cms`. Save the generated password.
 3. In the Strapi app's **Environment Variables**, paste values from
    `cms/.env.example` (real ones, never the example). The app will auto-deploy.
-4. Open the public URL (e.g. `https://cms.marena.alp-see.com/admin`),
+4. Open the public URL (e.g. `https://alp-see.at/admin`),
    create the **first admin user**, then go to **Settings → API Tokens**
    and create a **Read-only** token. Paste it into the frontend's
    `STRAPI_API_TOKEN`.
@@ -30,15 +30,15 @@ anchor sections.
 
 ## 2. Provision the Next.js frontend (Hostinger, ~20 min)
 
-1. hPanel → **Websites** → `marena.alp-see.com` → **Node.js** → **Create second app**.
+1. hPanel → **Websites** → `alp-see.at` → **Node.js** → **Create second app**.
    - Framework: **Next.js**.
    - Node version: **22 LTS**.
    - Source: same GitHub repo, subfolder `frontend/`.
    - Build command: `npm run build`. Start command: `npm start`.
 2. Paste the frontend `.env` values (`STRAPI_URL`, `STRAPI_API_TOKEN`,
    `REVALIDATE_SECRET`).
-3. Set the **app's domain** to `marena.alp-see.com` and (optionally) a
-   staging subdomain `cms.marena.alp-see.com` for the Strapi admin.
+3. Set the **app's domain** to `alp-see.at`. The unified server serves the
+   Strapi admin at `https://alp-see.at/admin`, so no CMS subdomain is needed.
 
 ## 3. Migrate the photos (one-time, ~45 min)
 
@@ -83,14 +83,14 @@ break the layout** without tripping a validation error.
 
 ## 5. Cutover and DNS (when client signs off, ~10 min)
 
-1. `marena.alp-see.com` is **already** on Hostinger (verified: HTTP 200,
+1. `alp-see.at` is **already** on Hostinger (verified: HTTP 200,
    hcdn, PHP 8.3 panel). We don't need to move DNS — we just point the
    document root at the Node Web App, then remove the default index.html
    (if any) so Next serves `/`.
 2. In hPanel, set the **Node.js app as the primary handler** for
-   `marena.alp-see.com` (the panel handles this when you assign a
+   `alp-see.at` (the panel handles this when you assign a
    domain to a Web App).
-3. Smoke test on a real device: `https://marena.alp-see.com/` should
+3. Smoke test on a real device: `https://alp-see.at/` should
    return 200 with the new hero, `/api/revalidate` should reject POST
    without the secret, and Strapi publish should revalidate the
    affected page within ~2s.

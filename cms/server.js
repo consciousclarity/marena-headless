@@ -1,5 +1,5 @@
 /**
- * Unified entry point for marena.alp-see.com.
+ * Unified entry point for alp-see.at.
  *
  * Boots two child processes:
  *   - Strapi on PORT+1 -> /admin, /api/*, /uploads/*
@@ -131,7 +131,7 @@ async function main() {
     // Tell upstreams they're behind a proxy so they trust X-Forwarded-Proto.
     proxyHeaders['x-forwarded-host'] = process.env.PUBLIC_URL
       ? new URL(process.env.PUBLIC_URL).host
-      : 'marena.alp-see.com';
+      : 'alp-see.at';
     proxyHeaders['x-forwarded-proto'] = 'https';
     const proxyReq = http.request(
       {
