@@ -43,8 +43,8 @@ function waitForPort(port, name, timeoutMs = 30000) {
 
 const children = [];
 
-function spawnChild(name, cmd, args, env) {
-  const c = spawn(cmd, args, { stdio: 'inherit', env: { ...process.env, ...env } });
+function spawnChild(name, cmd, args, env, cwd) {
+  const c = spawn(cmd, args, { stdio: 'inherit', env: { ...process.env, ...env }, cwd });
   c.on('exit', (code, sig) => {
     console.error(`[parent] ${name} exited code=${code} sig=${sig}`);
     process.exit(code ?? 1);
@@ -54,14 +54,34 @@ function spawnChild(name, cmd, args, env) {
 }
 
 async function main() {
+  // __dirname is either cms/ (local dev) or cms/.next/ (Hostinger).
+  // Walk up until we find a directory that contains cms/ or .next-standalone/.
+  // For the published build, the file is at cms/.next/marena-server.js, so
+  // we look one level up for the .next-standalone/ sibling.
+  const candidates = [
+    __dirname,                        // cms/ (local)
+    path.join(__dirname, '..'),       // repo root (local) / cms/ (hostinger)
+    path.join(__dirname, '..', '..'),  // repo root (hostinger)
+  ];
+  let repoRoot = __dirname;
+  for (const c of candidates) {
+    if (require('fs').existsSync(path.join(c, '.next-standalone', 'server.js'))) {
+      repoRoot = c;
+      break;
+    }
+  }
+  console.log(`[parent] repoRoot = ${repoRoot}`);
+
   const strapiEnv = { PORT: String(STRAPI_INTERNAL), HOST: '127.0.0.1' };
-  spawnChild('strapi', 'npx', ['strapi', 'start'], strapiEnv);
+  // Strapi is launched from its own directory so .strapi/ and config/ resolve.
+  const strapiCwd = path.join(repoRoot, 'cms');
+  spawnChild('strapi', 'npx', ['strapi', 'start'], { ...strapiEnv, cwd: strapiCwd }, strapiCwd);
   await waitForPort(STRAPI_INTERNAL, 'Strapi');
   console.log(`[parent] Strapi ready on :${STRAPI_INTERNAL}`);
 
-  const nextServer = path.join(__dirname, '.next-standalone', 'server.js');
+  const nextServer = path.join(repoRoot, '.next-standalone', 'server.js');
   const nextEnv = { PORT: String(NEXTJS_INTERNAL), HOSTNAME: '127.0.0.1' };
-  spawnChild('nextjs', 'node', [nextServer], nextEnv);
+  spawnChild('nextjs', 'node', [nextServer], nextEnv, path.join(repoRoot, 'frontend'));
   await waitForPort(NEXTJS_INTERNAL, 'Next.js');
   console.log(`[parent] Next.js ready on :${NEXTJS_INTERNAL}`);
 

@@ -112,21 +112,23 @@ async function main() {
   }
 
   // 4. Copy the standalone server into cms/ so cms/server.js can launch it.
-//    Hostinger's publish step expects a standard Next.js build at cms/.next/
-//    (the one with .next/server/app/, .next/BUILD_ID, etc.) — NOT the
-//    standalone-trimmed version. We do two copies:
-//      cms/.next/             ← full Next.js output (Hostinger's check passes)
-//      cms/.next-standalone/  ← standalone-only (what cms/server.js boots)
-  const fullSrc = resolve(frontendDir, ".next");
-  const standaloneSrc = resolve(frontendDir, ".next", "standalone");
-  const fullDst = resolve(cmsDir, ".next");
-  const standaloneDst = resolve(cmsDir, ".next-standalone");
-  console.log("▸ copying full Next.js build to cms/.next/...");
-  await rm(fullDst, { recursive: true, force: true });
-  await cp(fullSrc, fullDst, { recursive: true });
-  console.log("▸ copying standalone server to cms/.next-standalone/...");
-  await rm(standaloneDst, { recursive: true, force: true });
-  await cp(standaloneSrc, standaloneDst, { recursive: true });
+    //    Also copy cms/server.js into cms/.next/marena-server.js so Hostinger's
+    //    Next.js preset (which publishes only cms/.next/ → public_html/) finds
+    //    our unified entry. The original cms/server.js stays put for local dev.
+    const fullSrc = resolve(frontendDir, ".next");
+    const standaloneSrc = resolve(frontendDir, ".next", "standalone");
+    const fullDst = resolve(cmsDir, ".next");
+    const standaloneDst = resolve(cmsDir, ".next-standalone");
+    const entrySrc = resolve(cmsDir, "server.js");
+    const entryDst = resolve(cmsDir, ".next", "marena-server.js");
+    console.log("▸ copying full Next.js build to cms/.next/...");
+    await rm(fullDst, { recursive: true, force: true });
+    await cp(fullSrc, fullDst, { recursive: true });
+    console.log("▸ copying standalone server to cms/.next-standalone/...");
+    await rm(standaloneDst, { recursive: true, force: true });
+    await cp(standaloneSrc, standaloneDst, { recursive: true });
+    console.log("▸ copying unified entry to cms/.next/marena-server.js...");
+    await cp(entrySrc, entryDst);
 
   console.log("✓ unified build complete");
   console.log(`  cms/server.js -> ${standaloneDst}/server.js`);
