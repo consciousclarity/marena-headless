@@ -88,8 +88,12 @@ async function main() {
     cwd: cmsDir,
     env: { NODE_ENV: "development" },
   });
+  // ponytail: invoke strapi's binary directly, not `npm run build`,
+  //     to avoid recursing into our own build script (which would loop
+  //     because `cms/package.json` "build" is now THIS script).
+  const strapiBin = isWindows() ? "strapi.cmd" : "strapi";
   console.log("▸ building Strapi...");
-  await run(npmCmd(), ["run", "build"], {
+  await run(resolve(cmsDir, "node_modules", ".bin", strapiBin), ["build"], {
     cwd: cmsDir,
     env: { NODE_ENV: "production" },
   });
