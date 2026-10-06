@@ -101,13 +101,22 @@ async function main() {
       url.startsWith('/uploads/') ||
       url === '/_health';
     const targetPort = isApi ? STRAPI_INTERNAL : NEXTJS_INTERNAL;
+    const proxyHeaders = { ...req.headers };
+    // Override Host to the internal address so Next.js's canonical-URL
+    // detection doesn't 307-redirect to the public hostname we forwarded in.
+    proxyHeaders.host = `127.0.0.1:${targetPort}`;
+    // Tell upstreams they're behind a proxy so they trust X-Forwarded-Proto.
+    proxyHeaders['x-forwarded-host'] = process.env.PUBLIC_URL
+      ? new URL(process.env.PUBLIC_URL).host
+      : 'marena.alp-see.com';
+    proxyHeaders['x-forwarded-proto'] = 'https';
     const proxyReq = http.request(
       {
         host: '127.0.0.1',
         port: targetPort,
         method: req.method,
         path: url,
-        headers: req.headers,
+        headers: proxyHeaders,
       },
       (proxyRes) => {
         res.writeHead(proxyRes.statusCode || 502, proxyRes.headers);
