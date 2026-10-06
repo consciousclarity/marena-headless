@@ -152,6 +152,24 @@ async function main() {
     await cp(feNm, publishFeNm, { recursive: true, dereference: false });
   }
 
+  // 6. Copy the cms/ source tree (config/, src/, package.json, .strapi/)
+  //    into cms/.next/cms/ so the in-process Strapi load can find its files.
+  //    Skip node_modules/ and .next/ to avoid bloating the publish dir.
+  const cmsPublish = resolve(cmsDir, ".next", "cms");
+  console.log("▸ copying cms source tree into cms/.next/cms/ for publish...");
+  await rm(cmsPublish, { recursive: true, force: true });
+  await mkdir(cmsPublish, { recursive: true });
+  for (const entry of [
+    "config", "src", "package.json", ".strapi", "public",
+    "database", "scripts", "tsconfig.json", ".env",
+  ]) {
+    const src = resolve(cmsDir, entry);
+    const dst = resolve(cmsPublish, entry);
+    if (await exists(src)) {
+      await cp(src, dst, { recursive: true, dereference: false });
+    }
+  }
+
   console.log("✓ unified build complete");
   console.log(`  cms/server.js -> ${standaloneDst}/server.js`);
   console.log(`  cms/public/_next/  <- frontend/.next/static/`);

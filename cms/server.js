@@ -55,10 +55,10 @@ function spawnChild(name, cmd, args, env, cwd) {
 // ponytail: Hostinger's runtime sandbox blocks spawn() of any node binary.
 // Load Strapi and Next.js as in-process libraries instead.
 async function startStrapi() {
+  // The published tree has cms/ at <publishRoot>/cms/ (config, .strapi, etc.)
   process.chdir(path.join(publishRoot, 'cms'));
   process.env.PORT = String(STRAPI_INTERNAL);
   process.env.HOST = '127.0.0.1';
-  // Strapi exports a factory; .load() returns the app, .listen() binds the port.
   const strapiFactory = require(path.join(publishRoot, 'node_modules', '@strapi', 'strapi'));
   const app = await strapiFactory({
     appDir: path.join(publishRoot, 'cms'),
