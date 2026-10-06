@@ -13,6 +13,33 @@
  * (or move to a real VPS) when traffic exceeds what one Node process
  * can handle.
  */
+// Hostinger's runtime log API only keeps JSON console lines; Strapi's winston
+// logger writes plain text straight to stdout/stderr and calls process.exit on
+// fatal errors, so both would vanish. Mirror them through console.log.
+let _forwarding = false;
+for (const stream of ['stdout', 'stderr']) {
+  const orig = process[stream].write.bind(process[stream]);
+  process[stream].write = (chunk, ...rest) => {
+    if (!_forwarding) {
+      _forwarding = true;
+      try {
+        String(chunk).split('\n').forEach((l) => {
+          const line = l.replace(/\x1b\[[0-9;]*m/g, '').trim();
+          if (line && !/^(\[parent\]|\[strapi\]|\{)/.test(line)) console.log(`[strapi] ${line}`);
+        });
+      } finally {
+        _forwarding = false;
+      }
+    }
+    return orig(chunk, ...rest);
+  };
+}
+const _exit = process.exit.bind(process);
+process.exit = (code) => {
+  console.error(`[parent] process.exit(${code}) called from: ${new Error().stack.split('\n').slice(2, 6).join(' | ')}`);
+  return _exit(code);
+};
+
 const http = require('http');
 const { spawn } = require('child_process');
 const path = require('path');
