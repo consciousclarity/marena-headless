@@ -9,6 +9,8 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'alp-see.at' },
       { protocol: 'https', hostname: 'staging.marenabali.com' }, // legacy WP uploads while migrating
+      { protocol: 'http', hostname: 'localhost', port: '1337' },
+      { protocol: 'http', hostname: '127.0.0.1', port: '1337' },
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30d

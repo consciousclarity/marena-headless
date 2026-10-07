@@ -115,21 +115,32 @@ const flatten = (entity: any) => {
   return out;
 };
 
+// Strapi 5 has no built-in populate=deep (that needs a community plugin).
+// populate=* only goes one level; media inside components (seo.ogImage)
+// needs an explicit nested populate.
+const HOMEPAGE_POPULATE =
+  'populate[heroImage]=true&populate[heroVideo]=true&populate[seo][populate][ogImage]=true';
+const VILLA_POPULATE =
+  'populate[heroImage]=true&populate[gallery]=true&populate[seo][populate][ogImage]=true';
+const EXPERIENCE_POPULATE = 'populate[icon]=true&populate[gallery]=true';
+
 // Public API ---------------------------------------------------------------
 
 export const getHomepage = (opts?: { draft?: boolean }) =>
-  strapiFetch<any>('/homepage?populate=deep', { tags: ['homepage'], draft: opts?.draft }, 60).then(flatten) as Promise<Homepage>;
+  strapiFetch<any>(`/homepage?${HOMEPAGE_POPULATE}`, { tags: ['homepage'], draft: opts?.draft }, 60).then(
+    flatten
+  ) as Promise<Homepage>;
 
 export const getAllVillas = (opts?: { draft?: boolean }) =>
-  strapiFetch<any[]>('/villas?populate=deep&sort=order:asc', { tags: ['villas'], draft: opts?.draft }, 60).then((rows) =>
-    rows.map(flatten)
+  strapiFetch<any[]>(`/villas?${VILLA_POPULATE}&sort=order:asc`, { tags: ['villas'], draft: opts?.draft }, 60).then(
+    (rows) => rows.map(flatten)
   ) as Promise<Villa[]>;
 
 export const getVillaBySlug = async (slug: string, opts?: { draft?: boolean }) => {
   const tag = `villa:${slug}`;
   try {
     const rows = await strapiFetch<any[]>(
-      `/villas?filters[slug][$eq]=${encodeURIComponent(slug)}&populate=deep`,
+      `/villas?filters[slug][$eq]=${encodeURIComponent(slug)}&${VILLA_POPULATE}`,
       { tags: ['villas', tag], draft: opts?.draft },
       60
     );
@@ -141,9 +152,11 @@ export const getVillaBySlug = async (slug: string, opts?: { draft?: boolean }) =
 };
 
 export const getAllExperiences = (opts?: { draft?: boolean }) =>
-  strapiFetch<any[]>('/experiences?populate=deep&sort=order:asc', { tags: ['experiences'], draft: opts?.draft }, 60).then((rows) =>
-    rows.map(flatten)
-  ) as Promise<Experience[]>;
+  strapiFetch<any[]>(
+    `/experiences?${EXPERIENCE_POPULATE}&sort=order:asc`,
+    { tags: ['experiences'], draft: opts?.draft },
+    60
+  ).then((rows) => rows.map(flatten)) as Promise<Experience[]>;
 
 export const getAllVillasSlugs = async (): Promise<string[]> =>
   (await getAllVillas()).map((v) => v.slug);
