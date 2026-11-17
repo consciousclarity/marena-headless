@@ -34,9 +34,20 @@ export default async function VillaPage({ params }: { params: { slug: string } }
   const v = await getVillaBySlug(params.slug).catch(() => null);
   if (!v) notFound();
 
+  // A villa with no hero image set would otherwise crash the Hero
+  // component on `image.url`, taking the whole page down with a 500.
+  // A placeholder is the right answer here: the page still renders,
+  // and the missing asset is visible rather than fatal.
+  const heroImage = v.heroImage ?? {
+    url: 'https://alp-see.at/uploads/hero_placeholder_8e2d1c.jpg',
+    alternativeText: v.name,
+    width: 2400,
+    height: 1480,
+  };
+
   return (
     <main>
-      <Hero eyebrow={`${v.bedrooms} Bedroom${v.bedrooms > 1 ? 's' : ''}`} headline={v.name} subheadline={v.tagline} image={v.heroImage} />
+      <Hero eyebrow={`${v.bedrooms} Bedroom${v.bedrooms > 1 ? 's' : ''}`} headline={v.name} subheadline={v.tagline} image={heroImage} />
 
       <section className="mx-auto max-w-[89rem] px-[2.1rem] py-[8.9rem]">
         <p className="mb-[1.3rem] text-[0.78rem] uppercase tracking-[0.21em] text-black/55">Overview</p>

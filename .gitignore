@@ -17,3 +17,6 @@ public/uploads/
 # media-manifest.local.json is your private working copy if you want to keep one.
 .env.*
 !.env.example
+
+# TypeScript incremental build state
+*.tsbuildinfo
